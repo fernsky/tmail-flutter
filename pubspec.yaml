@@ -352,6 +352,22 @@ dependency_overrides:
       url: https://github.com/linagora/intl_generator.git
       ref: master
 
+  # Two packages whose newest releases need a Dart/Flutter newer than the
+  # CI image ships (Flutter 3.41.7 / Dart 3.11.5). They resolve fine on a
+  # bleeding-edge local SDK and then fail the release build, which is the
+  # worst way to find out — so both are pinned to the last version that
+  # compiles on the toolchain that actually builds the artefact.
+  #
+  # firebase_core_web 3.11 calls `.isA<T>()` from dart:js_interop, which
+  # Dart 3.11.5 does not have. 3.10.0 is the newest release without it
+  # (verified against the published sources) and its
+  # firebase_core_platform_interface ^8.1.0 still admits the 8.1.1 that
+  # firebase_messaging 16.6.0 requires -- going back further breaks that.
+  firebase_core_web: 3.10.0
+  # enough_platform_widgets 1.1.2 passes a `bool?` where Flutter 3.41.7
+  # wants a `bool` (its icon-button wrappers).
+  enough_platform_widgets: 1.1.1
+
   # jmap_dart_client incorrectly declares build_runner and json_serializable
   # as regular dependencies. Override here so the workspace can resolve.
   build_runner: ^2.15.0
