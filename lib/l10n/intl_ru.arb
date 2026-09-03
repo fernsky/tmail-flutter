@@ -6,7 +6,7 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "login_text_slogan": "Twake Mail",
+  "login_text_slogan": "Bodhimail",
   "@login_text_slogan": {
     "type": "text",
     "placeholders_order": [],
@@ -672,7 +672,7 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "app_name": "Twake Mail",
+  "app_name": "Bodhimail",
   "@app_name": {
     "type": "text",
     "placeholders_order": [],
@@ -856,7 +856,7 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "page_name": "Twake Mail",
+  "page_name": "Bodhimail",
   "@page_name": {
     "type": "text",
     "placeholders_order": [],
@@ -2344,7 +2344,7 @@
       "softLimit": {}
     }
   },
-  "textQuotasRunOutOfStorageContent": "Теперь вы временно не можете отправлять или получать письма. Пожалуйста, освободите хранилище или обновите подписку, чтобы получить доступ ко всем функциям Twake Mail.",
+  "textQuotasRunOutOfStorageContent": "Теперь вы временно не можете отправлять или получать письма. Пожалуйста, освободите хранилище или обновите подписку, чтобы получить доступ ко всем функциям Bodhimail.",
   "@textQuotasRunOutOfStorageContent": {
     "type": "text",
     "placeholders_order": [],
@@ -2408,7 +2408,7 @@
       "progress": {}
     }
   },
-  "textQuotasRunningOutOfStorageContent": "Скоро вы потеряете возможность отправлять письма в Twake Mail. Пожалуйста, очистите хранилище или обновите подписку, чтобы получить все функции Twake Mail.",
+  "textQuotasRunningOutOfStorageContent": "Скоро вы потеряете возможность отправлять письма в Bodhimail. Пожалуйста, очистите хранилище или обновите подписку, чтобы получить все функции Bodhimail.",
   "@textQuotasRunningOutOfStorageContent": {
     "type": "text",
     "placeholders_order": [],
@@ -2468,7 +2468,7 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "appTitlePushNotification": "Twake Mail",
+  "appTitlePushNotification": "Bodhimail",
   "@appTitlePushNotification": {
     "type": "text",
     "placeholders_order": [],
@@ -3466,7 +3466,7 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "languageSubtitle": "Выберите язык Twake Mail.",
+  "languageSubtitle": "Выберите язык Bodhimail.",
   "@languageSubtitle": {
     "type": "text",
     "placeholders_order": [],
@@ -3798,7 +3798,7 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "bannerProgressingRecoveryMessage": "Мы уже занимаемся восстановлением. Вы можете продолжать использовать Twake Mail",
+  "bannerProgressingRecoveryMessage": "Мы уже занимаемся восстановлением. Вы можете продолжать использовать Bodhimail",
   "@bannerProgressingRecoveryMessage": {
     "type": "text",
     "placeholders_order": [],
@@ -4066,7 +4066,7 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "pleaseAllowNotifications": "Перейдите в настройки устройства и разрешите Twake Mail присылать уведомления",
+  "pleaseAllowNotifications": "Перейдите в настройки устройства и разрешите Bodhimail присылать уведомления",
   "@pleaseAllowNotifications": {
     "type": "text",
     "placeholders_order": [],
@@ -4078,8 +4078,8 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone": "Позволяет Twake Mail уведомлять вас о поступлении нового сообщения",
-  "@allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone": {
+  "allowsBodhimailToNotifyYouWhenANewMessageArrivesOnYourPhone": "Позволяет Bodhimail уведомлять вас о поступлении нового сообщения",
+  "@allowsBodhimailToNotifyYouWhenANewMessageArrivesOnYourPhone": {
     "type": "text",
     "placeholders_order": [],
     "placeholders": {}
@@ -5042,13 +5042,13 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "quotaBannerWarningSubtitleWithPremium": "Чтобы продолжить отправлять сообщения и пользоваться всеми функциями Twake Mail, освободите место или обновите план.",
+  "quotaBannerWarningSubtitleWithPremium": "Чтобы продолжить отправлять сообщения и пользоваться всеми функциями Bodhimail, освободите место или обновите план.",
   "@quotaBannerWarningSubtitleWithPremium": {
     "type": "text",
     "placeholders_order": [],
     "placeholders": {}
   },
-  "quotaBannerWarningSubtitleWithoutPremium": "Чтобы продолжить отправлять сообщения и пользоваться всеми функциями Twake Mail, освободите место на диске.",
+  "quotaBannerWarningSubtitleWithoutPremium": "Чтобы продолжить отправлять сообщения и пользоваться всеми функциями Bodhimail, освободите место на диске.",
   "@quotaBannerWarningSubtitleWithoutPremium": {
     "type": "text",
     "placeholders_order": [],

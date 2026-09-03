@@ -16,7 +16,17 @@ class AppConfig {
   static const String iOSKeychainSharingGroupId = 'KUT463DS29.com.linagora.ios.teammail.shared';
   static const String iOSKeychainSharingService = 'com.linagora.ios.teammail.sessions';
   static const String saasPlatform = 'saas';
-  static const String linagoraPrivacyUrl = 'https://github.com/linagora/tmail-flutter/blob/master/privacy.md';
+  /// Our privacy policy, not upstream's. Pointing this at Linagora's
+  /// privacy.md showed bodhimail's users a document describing someone
+  /// else's data handling -- wrong regardless of licensing.
+  static const String privacyUrl = 'https://bodhimail.eshasan.com/privacy';
+
+  /// Where this app's source lives, surfaced in the UI beside the privacy
+  /// link. AGPL-3.0 section 13 requires that anyone interacting with a
+  /// modified version over a network be offered its Corresponding Source;
+  /// a public repository nobody can find from inside the app does not
+  /// discharge that. This constant is the offer.
+  static const String sourceCodeUrl = 'https://github.com/fernsky/tmail-flutter';
   static const String saasRegistrationUrl = 'https://sign-up.twake.app';
   static const String saasJmapServerUrl = 'https://jmap.twake.app';
 

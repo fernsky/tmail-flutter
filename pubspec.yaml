@@ -477,7 +477,7 @@ cider:
 
 patrol:
   test_directory: integration_test
-  app_name: Twake Mail
+  app_name: Bodhimail
   android:
     package_name: com.linagora.android.teammail
 

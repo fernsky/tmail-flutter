@@ -100,7 +100,7 @@ class TwakeWelcomeController extends ReloadableController {
   }
 
   void onClickPrivacyPolicy() {
-    AppUtils.launchLink(AppConfig.linagoraPrivacyUrl);
+    AppUtils.launchLink(AppConfig.privacyUrl);
   }
 
   void onClickSignIn(BuildContext context) {

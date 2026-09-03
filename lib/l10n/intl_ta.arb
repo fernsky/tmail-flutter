@@ -1213,8 +1213,8 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone": "உங்கள் தொலைபேசியில் ஒரு புதிய செய்தி வரும்போது உங்களுக்குத் தெரிவிக்க டூ மெயில் அனுமதிக்கிறது",
-  "@allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone": {
+  "allowsBodhimailToNotifyYouWhenANewMessageArrivesOnYourPhone": "உங்கள் தொலைபேசியில் ஒரு புதிய செய்தி வரும்போது உங்களுக்குத் தெரிவிக்க டூ மெயில் அனுமதிக்கிறது",
+  "@allowsBodhimailToNotifyYouWhenANewMessageArrivesOnYourPhone": {
     "type": "text",
     "placeholders_order": [],
     "placeholders": {}
