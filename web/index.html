@@ -100,7 +100,24 @@
   <script>
     {{flutter_js}}
     {{flutter_build_config}}
-    
+
+    // Where the heavy build artefacts load from.
+    //
+    // The CI substitutes the token below with this build's immutable CDN
+    // prefix; left unsubstituted (a local `flutter run`), the check falls
+    // through and everything loads same-origin as usual.
+    //
+    // index.html itself always stays on the origin with a short TTL: it is
+    // the pointer that names which CDN prefix to use, so caching it hard
+    // would pin browsers to an old build permanently.
+    var tmailCdnBase = "__CDN_BASE__";
+    var tmailFlutterConfig = {};
+    if (tmailCdnBase && tmailCdnBase.indexOf("__CDN") !== 0) {
+      tmailFlutterConfig.assetBase = tmailCdnBase;
+      tmailFlutterConfig.entryPointBaseUrl = tmailCdnBase;
+      tmailFlutterConfig.canvasKitBaseUrl = tmailCdnBase + "canvaskit/";
+    }
+
     loadLanguageResources().finally(initialTmailApp);
 
     if ('serviceWorker' in navigator) {
@@ -116,6 +133,7 @@
             console.log('[Twake Mail] Error unregistering service worker: ', error);
           }
           _flutter.loader.load({
+            config: tmailFlutterConfig,
             onEntrypointLoaded: async function(engineInitializer) {
               const appRunner = await engineInitializer.initializeEngine({
                 fontFallbackBaseUrl: ''
@@ -126,6 +144,7 @@
         });
     } else {
       _flutter.loader.load({
+        config: tmailFlutterConfig,
         onEntrypointLoaded: async function(engineInitializer) {
           const appRunner = await engineInitializer.initializeEngine({
             fontFallbackBaseUrl: ''

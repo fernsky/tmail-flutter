@@ -1,0 +1,168 @@
+# CI for the bodhimail webmail (a TMail fork), served at
+# webmail.eshasan.com and talking JMAP to bodhimail.eshasan.com.
+#
+# Shaped like bodhimail's own pipeline, and for the same reasons — see the
+# comments on the CDN substitution below, which encode a bug that shipped
+# there once and is easy to reintroduce.
+
+stages:
+  - build
+  - publish
+  - deploy
+
+variables:
+  PUBLIC_HOST: webmail.eshasan.com
+  # Where the app points its JMAP client. The app reads this from `env.file`
+  # at *runtime* via flutter_dotenv rather than a compile-time define, so
+  # this is written into that file before the build rather than passed as
+  # --dart-define.
+  JMAP_SERVER_URL: https://bodhimail.eshasan.com/
+  GIT_DEPTH: "20"
+
+build-web:
+  stage: build
+  tags:
+    - build-v2
+  before_script:
+    # Shell executors do not read login profiles; the image writes its
+    # toolchain PATH here for jobs to pick up explicitly.
+    - source /etc/profile.d/eshasan-ci-toolchain.sh
+    - flutter --version
+  script:
+    - set -euo pipefail
+    - source /etc/profile.d/eshasan-ci-toolchain.sh
+
+    # env.file is a bundled asset (see pubspec.yaml), so the deployment's
+    # server URL has to be baked in before the build, not after.
+    - |
+      sed -i "s#^SERVER_URL=.*#SERVER_URL=${JMAP_SERVER_URL}#" env.file
+      sed -i "s#^DOMAIN_REDIRECT_URL=.*#DOMAIN_REDIRECT_URL=https://${PUBLIC_HOST}#" env.file
+      echo "--- env.file ---"; grep -E '^(SERVER_URL|DOMAIN_REDIRECT_URL)=' env.file
+
+    - flutter precache --web
+    - flutter pub get
+    - flutter build web --release
+
+    # --- point the loader at this build's CDN prefix, BEFORE compressing ---
+    #
+    # The order matters and is not cosmetic. nginx's gzip_static/brotli_static
+    # serve a precompressed sibling unconditionally whenever the client
+    # accepts that encoding, with no freshness check against the plain file.
+    # Substituting after compressing would leave the .gz holding the literal
+    # __CDN_BASE__ token, so every real browser (they all accept gzip) would
+    # get an app pointed at nothing — while a plain curl with no
+    # Accept-Encoding header saw the correct file and reported no bug. That
+    # exact mistake shipped on bodhimail once.
+    - |
+      if [ -n "${CDN_BUCKET:-}" ]; then
+        CDN_PREFIX="${CDN_BASE:-https://cdn.app.eshasan.com}/webmail/web/${CI_PIPELINE_IID}/"
+        echo "loader -> ${CDN_PREFIX}"
+      else
+        CDN_PREFIX=""
+        echo "loader -> same-origin (no CDN configured)"
+      fi
+      sed -i "s#__CDN_BASE__#${CDN_PREFIX}#g" build/web/index.html
+
+    # Precompress so nginx can serve the small variants without spending CPU
+    # per request. brotli is optional: the runner may not have the CLI.
+    - |
+      find build/web -type f \( -name '*.js' -o -name '*.css' -o -name '*.html' \
+        -o -name '*.json' -o -name '*.wasm' -o -name '*.svg' \) -print0 |
+      while IFS= read -r -d '' f; do
+        gzip -9 -k -f "$f"
+        command -v brotli >/dev/null 2>&1 && brotli -q 11 -k -f "$f" || true
+      done
+      echo "compressed $(find build/web -name '*.gz' | wc -l) files"
+  artifacts:
+    paths:
+      - build/web
+    expire_in: 1 day
+
+publish-cdn:
+  stage: publish
+  tags:
+    - build-v2
+  needs:
+    - build-web
+  script:
+    - set -euo pipefail
+    - |
+      if [ -z "${CDN_BUCKET:-}" ]; then
+        echo "CDN_BUCKET unset -- skipping CDN publish."
+        exit 0
+      fi
+    # rclone is not in the runner image; cache it in the runner's home.
+    - |
+      RCLONE_BIN="$HOME/.local/bin/rclone"
+      if [ ! -x "$RCLONE_BIN" ]; then
+        mkdir -p "$HOME/.local/bin"
+        curl -fsSL "https://downloads.rclone.org/rclone-current-linux-amd64.zip" -o /tmp/rclone.zip
+        unzip -o -j -d "$HOME/.local/bin" /tmp/rclone.zip '*/rclone'
+        chmod +x "$RCLONE_BIN"; rm -f /tmp/rclone.zip
+      fi
+      "$RCLONE_BIN" version | head -1
+    - |
+      # A connect-string would be tidier, but rclone chokes on the `://` in
+      # the endpoint; env vars are the arrangement that actually works.
+      export RCLONE_CONFIG_R2_TYPE=s3
+      export RCLONE_CONFIG_R2_PROVIDER=Cloudflare
+      export RCLONE_CONFIG_R2_ACCESS_KEY_ID="${CDN_ACCESS_KEY}"
+      export RCLONE_CONFIG_R2_SECRET_ACCESS_KEY="${CDN_SECRET_KEY}"
+      export RCLONE_CONFIG_R2_ENDPOINT="${CDN_ENDPOINT}"
+      export RCLONE_CONFIG_R2_REGION=auto
+
+      PREFIX="webmail/web/${CI_PIPELINE_IID}"
+      echo "publishing -> r2:${CDN_BUCKET}/${PREFIX}"
+
+      # Immutable is honest here: the prefix is unique to this pipeline, so
+      # nothing under it is ever rewritten. Flutter does not content-hash
+      # its filenames, which is exactly why the prefix has to carry the
+      # version instead.
+      "$HOME/.local/bin/rclone" copy build/web "r2:${CDN_BUCKET}/${PREFIX}" \
+        --exclude "index.html" --exclude "flutter_service_worker.js" \
+        --header-upload "Cache-Control: public, max-age=31536000, immutable" \
+        --progress=false --stats-one-line --stats=10s --transfers=16 --checkers=32
+
+      "$HOME/.local/bin/rclone" copy build/web "r2:${CDN_BUCKET}/${PREFIX}" \
+        --include "index.html" --include "flutter_service_worker.js" \
+        --header-upload "Cache-Control: public, max-age=60, must-revalidate" \
+        --progress=false --stats-one-line
+
+      echo "published: ${CDN_BASE:-https://cdn.app.eshasan.com}/${PREFIX}/"
+
+      # Warm the edge before a user reaches it: every object under a fresh
+      # prefix is a guaranteed MISS, ~200ms each, and this app has a lot of
+      # them. Best-effort — xargs returns 123 if any single curl fails,
+      # which is ordinary at this parallelism and must not fail the job
+      # when the publish itself already succeeded.
+      WARM="${CDN_BASE:-https://cdn.app.eshasan.com}/${PREFIX}"
+      (cd build/web && find . -type f ! -name '*.gz' ! -name '*.br' -printf '%P\n') |
+        xargs -P 32 -I{} curl -s -o /dev/null --max-time 15 "${WARM}/{}" ||
+        echo "cache warm had failures (non-fatal)"
+
+deploy:
+  stage: deploy
+  tags:
+    - deploy-v2
+  needs:
+    - build-web
+    - publish-cdn
+  when: manual
+  script:
+    - set -euo pipefail
+    - |
+      install -d -m 0700 ~/.ssh
+      echo "$PRODUCTION_SSH_PRIVATE_KEY_BASE64" | base64 -d > ~/.ssh/deploy_key
+      chmod 600 ~/.ssh/deploy_key
+      ssh-keyscan -H "$PRODUCTION_SERVER_IP" >> ~/.ssh/known_hosts 2>/dev/null
+    - |
+      SSH="ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes deploy@${PRODUCTION_SERVER_IP}"
+      rsync -az --delete -e "ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
+        build/web/ "deploy@${PRODUCTION_SERVER_IP}:/tmp/webmail-web/"
+      $SSH "sudo mkdir -p /opt/webmail/web \
+            && sudo rsync -a --delete /tmp/webmail-web/ /opt/webmail/web/ \
+            && sudo chown -R nginx:nginx /opt/webmail/web \
+            && sudo restorecon -R /opt/webmail/web 2>/dev/null || true \
+            && sudo nginx -t && sudo systemctl reload nginx \
+            && rm -rf /tmp/webmail-web"
+    - echo "deployed to https://${PUBLIC_HOST}/"
