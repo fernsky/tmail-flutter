@@ -18,6 +18,7 @@ class ThemeUtils {
       hoverColor: Theme.of(context).colorScheme.outline.withValues(alpha: 0.08),
       textSelectionTheme: _textSelectionTheme,
       dividerTheme: _dividerTheme,
+      elevatedButtonTheme: _elevatedButtonTheme,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       scrollbarTheme: ScrollbarThemeData(
         thickness: WidgetStateProperty.all(6.0),
@@ -374,6 +375,21 @@ class ThemeUtils {
   static const DividerThemeData _dividerTheme = DividerThemeData(
     color: AppColor.colorDivider,
     space: 0
+  );
+
+  /// Bodhimail's primitive radius for buttons/inputs/cards
+  /// (`../bodhimail/app/lib/core/theme/app_theme.dart`).
+  static const double primitiveBorderRadius = 8;
+
+  static final ElevatedButtonThemeData _elevatedButtonTheme = ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(primitiveBorderRadius),
+      ),
+      textStyle: const TextStyle(fontWeight: FontWeight.w600),
+    ),
   );
 
   static void setSystemLightUIStyle() {

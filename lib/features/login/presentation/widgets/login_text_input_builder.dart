@@ -71,7 +71,7 @@ class _LoginTextInputBuilderState extends State<LoginTextInputBuilder> {
           controller: _controller,
           textStyle: ThemeUtils.defaultTextStyleInterFont.copyWith(
             color: AppColor.loginTextFieldHintColor,
-            fontSize: 16,
+            fontSize: 17,
             fontWeight: FontWeight.normal
           ),
           focusNode: widget.focusNode,
@@ -80,18 +80,18 @@ class _LoginTextInputBuilderState extends State<LoginTextInputBuilder> {
             ..setPrefixText(widget.prefixText)
             ..setContentPadding(const EdgeInsetsDirectional.only(
                 start: 25,
-                top: 15,
-                bottom: 15,
+                top: 18,
+                bottom: 18,
                 end: 40
             ))
             ..setHintStyle(ThemeUtils.defaultTextStyleInterFont.copyWith(
                 color: AppColor.loginTextFieldHintColor,
-                fontSize: 16,
+                fontSize: 17,
                 fontWeight: FontWeight.normal
             ))
             ..setPrefixStyle(ThemeUtils.defaultTextStyleInterFont.copyWith(
                 color: AppColor.loginTextFieldHintColor,
-                fontSize: 16,
+                fontSize: 17,
                 fontWeight: FontWeight.normal
             ))
             ..setErrorTextStyle(ThemeUtils.defaultTextStyleInterFont.copyWith(
@@ -99,23 +99,23 @@ class _LoginTextInputBuilderState extends State<LoginTextInputBuilder> {
                 fontSize: 13,
                 fontWeight: FontWeight.normal
             ))
-            ..setFocusBorder(const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                borderSide: BorderSide(
-                  width: 1,
+            ..setFocusBorder(OutlineInputBorder(
+                borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
+                borderSide: const BorderSide(
+                  width: 2,
                   color: AppColor.loginTextFieldFocusedBorder
                 )
             ))
-            ..setEnabledBorder(const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                borderSide: BorderSide(
+            ..setEnabledBorder(OutlineInputBorder(
+                borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
+                borderSide: const BorderSide(
                   width: 1,
                   color: AppColor.loginTextFieldBorderColor
                 )
             ))
-            ..setErrorBorder(const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                borderSide: BorderSide(
+            ..setErrorBorder(OutlineInputBorder(
+                borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
+                borderSide: const BorderSide(
                   width: 1,
                   color: AppColor.loginTextFieldErrorBorder
                 )

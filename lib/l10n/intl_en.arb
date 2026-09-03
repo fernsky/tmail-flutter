@@ -41,13 +41,13 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "email": "email",
+  "email": "Email",
   "@email": {
     "type": "text",
     "placeholders_order": [],
     "placeholders": {}
   },
-  "password": "password",
+  "password": "Password",
   "@password": {
     "type": "text",
     "placeholders_order": [],

@@ -23,8 +23,10 @@ abstract class BaseLoginView extends GetWidget<LoginController> {
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: AppColor.primaryColor,
+          elevation: 0,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
             side: const BorderSide(width: 0, color: AppColor.primaryColor)
           )
         ),
@@ -33,6 +35,7 @@ abstract class BaseLoginView extends GetWidget<LoginController> {
           AppLocalizations.of(context).signIn,
           style: ThemeUtils.defaultTextStyleInterFont.copyWith(
             fontSize: 16,
+            fontWeight: FontWeight.w600,
             color: Colors.white,
           ),
         ),
@@ -70,6 +73,11 @@ abstract class BaseLoginView extends GetWidget<LoginController> {
       autocorrect: false,
       autofillHints: const [AutofillHints.email],
       keyboardType: TextInputType.emailAddress,
+      textStyle: ThemeUtils.defaultTextStyleInterFont.copyWith(
+        color: AppColor.textFieldTextColor,
+        fontSize: 17,
+        fontWeight: FontWeight.normal,
+      ),
       decoration: (LoginInputDecorationBuilder()
         ..setLabelText(AppLocalizations.of(context).email)
         ..setHintText(AppLocalizations.of(context).email))

@@ -87,6 +87,7 @@ export 'presentation/views/list/tree_view.dart';
 export 'presentation/views/button/icon_button_web.dart';
 export 'presentation/views/button/tmail_button_widget.dart';
 export 'presentation/views/button/default_close_button_widget.dart';
+export 'presentation/views/login/wave_hero_widget.dart';
 export 'presentation/views/image/avatar_builder.dart';
 export 'presentation/views/list/sliver_grid_delegate_fixed_height.dart';
 export 'presentation/views/list/no_stretch_scroll_behavior.dart';
