@@ -220,11 +220,12 @@ dependencies:
 
   flutter_appauth_platform_interface: 9.0.0
 
-  # 0.20.3, not 0.20.2: flutter_localizations in the current SDK requires
-  # ^0.20.3, and an exact pin one patch below it makes the whole workspace
-  # unresolvable. Kept exact rather than caret to match the other packages
-  # here, which all pin so their versions cannot drift apart.
-  intl: 0.20.3
+  # A range, not a pin. flutter_localizations pins intl to whatever the
+  # SDK ships, and that differs between machines: the CI image's Flutter
+  # pins 0.20.2 while a newer local SDK requires ^0.20.3. Any exact pin
+  # therefore breaks one of the two -- ^0.20.2 resolves to whichever the
+  # local SDK demands and satisfies both.
+  intl: ^0.20.2
 
   flutter_typeahead: ^6.0.0
 
