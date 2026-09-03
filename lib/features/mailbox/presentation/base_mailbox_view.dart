@@ -25,6 +25,7 @@ import 'package:tmail_ui_user/features/mailbox/presentation/model/mailbox_sideba
 import 'package:tmail_ui_user/features/mailbox/presentation/model/mailbox_sidebar_category_tree_source.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/model/mailbox_sidebar_category_tree_source_resolver.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/model/presentation_label_mailbox.dart';
+import 'package:tmail_ui_user/features/mailbox/presentation/styles/sidebar_style.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/widgets/mailbox_app_bar.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/widgets/mailbox_loading_bar_widget.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/widgets/sending_queue_mailbox_widget.dart';
@@ -84,30 +85,33 @@ abstract class BaseMailboxView extends GetWidget<MailboxController>
         ScrollConfiguration.of(context).getScrollPhysics(context),
       );
 
-      return LinagoraSidebarMenu(
-        controller: controller.mailboxListScrollController,
-        scrollViewKey: _mailboxListScrollViewKey,
-        physics: scrollPhysics,
-        primaryAction: primaryAction,
-        sections: [
-          LinagoraSidebarMenuSection(
-            sliver: SliverMainAxisGroup(
-              slivers: [
-                _buildDefaultMailboxSliver(),
-                _buildSendingQueueSliver(context),
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: LinagoraSidebarMenu.sectionSpacing,
+      return LinagoraSidebarTheme(
+        data: buildSidebarStyle(Theme.of(context).brightness),
+        child: LinagoraSidebarMenu(
+          controller: controller.mailboxListScrollController,
+          scrollViewKey: _mailboxListScrollViewKey,
+          physics: scrollPhysics,
+          primaryAction: primaryAction,
+          sections: [
+            LinagoraSidebarMenuSection(
+              sliver: SliverMainAxisGroup(
+                slivers: [
+                  _buildDefaultMailboxSliver(),
+                  _buildSendingQueueSliver(context),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: LinagoraSidebarMenu.sectionSpacing,
+                    ),
                   ),
-                ),
-                _buildFoldersSliver(context),
-                _buildLabelsSliver(context),
-              ],
+                  _buildFoldersSliver(context),
+                  _buildLabelsSliver(context),
+                ],
+              ),
             ),
-          ),
-        ],
-        footerItems: footerItems,
-        bodyOverlay: bodyOverlay,
+          ],
+          footerItems: footerItems,
+          bodyOverlay: bodyOverlay,
+        ),
       );
     });
   }
