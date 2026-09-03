@@ -40,7 +40,19 @@ build-web:
       echo "--- env.file ---"; grep -E '^(SERVER_URL|DOMAIN_REDIRECT_URL)=' env.file
 
     - flutter precache --web
-    - flutter pub get
+
+    # Code generation, before anything tries to compile.
+    #
+    # Every *.g.dart and the intl messages_all.dart are gitignored, so a
+    # fresh clone genuinely does not contain them and dart2js fails on
+    # dozens of "No such file or directory" reads that look like missing
+    # source but are missing *output*. scripts/prebuild.sh is the project's
+    # own generator (build_runner across the pub workspace, then intl
+    # extract/generate for the root and scribe modules) and is what
+    # upstream CI runs too.
+    - chmod +x scripts/prebuild.sh
+    - ./scripts/prebuild.sh
+
     - flutter build web --release
 
     # --- point the loader at this build's CDN prefix, BEFORE compressing ---
