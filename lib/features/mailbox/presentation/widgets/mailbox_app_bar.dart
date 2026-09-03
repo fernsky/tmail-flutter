@@ -7,14 +7,12 @@ import 'package:tmail_ui_user/features/base/widget/user_avatar_builder.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/widgets/support/contact_support_icon.dart';
 
 typedef OnOpenSettingsAction = void Function();
-typedef OnOpenAppGridAction = void Function();
 typedef OnOpenContactSupportAction = void Function();
 
 class MailboxAppBar extends StatelessWidget {
   final ImagePaths imagePaths;
   final String username;
   final OnOpenSettingsAction? openSettingsAction;
-  final OnOpenAppGridAction? openAppGridAction;
   final OnOpenContactSupportAction? openContactSupportAction;
 
   const MailboxAppBar({
@@ -22,7 +20,6 @@ class MailboxAppBar extends StatelessWidget {
     required this.imagePaths,
     required this.username,
     this.openSettingsAction,
-    this.openAppGridAction,
     this.openContactSupportAction,
   });
 

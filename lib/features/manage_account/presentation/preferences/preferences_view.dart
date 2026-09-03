@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tmail_ui_user/features/base/mixin/app_loader_mixin.dart';
+import 'package:tmail_ui_user/features/base/widget/source_code_link_widget.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/base/setting_detail_view_builder.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/menu/settings_utils.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/model/account_menu_item.dart';
@@ -80,6 +81,10 @@ class PreferencesView extends GetWidget<PreferencesController> with AppLoaderMix
                       ),
                     );
                   }),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 24),
+                    child: SourceCodeLinkWidget(),
+                  ),
                 ],
               ),
             ),

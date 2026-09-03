@@ -16,7 +16,6 @@ import 'package:tmail_ui_user/features/labels/presentation/models/label_action_t
 import 'package:tmail_ui_user/features/mailbox/presentation/extensions/expand_mode_extension.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/extensions/handle_label_action_type_extension.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/extensions/handle_mailbox_action_extension.dart';
-import 'package:tmail_ui_user/features/mailbox/presentation/extensions/open_app_grid_extension.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/extensions/presentation_mailbox_extension.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/extensions/toggle_expand_folders_extension.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/mailbox_controller.dart';
@@ -57,10 +56,6 @@ abstract class BaseMailboxView extends GetWidget<MailboxController>
         username = session?.getOwnEmailAddressOrUsername() ?? '';
       }
 
-      final linagoraApps = dashboardController
-          .appGridDashboardController
-          .listLinagoraApp;
-
       final contactSupportCapability = accountId != null && session != null
           ? session.getContactSupportCapability(accountId)
           : null;
@@ -69,9 +64,6 @@ abstract class BaseMailboxView extends GetWidget<MailboxController>
         imagePaths: controller.imagePaths,
         username: username,
         openSettingsAction: dashboardController.goToSettings,
-        openAppGridAction: linagoraApps.isNotEmpty
-          ? () => controller.openAppGrid(linagoraApps)
-          : null,
         openContactSupportAction: contactSupportCapability?.isAvailable == true
           ? () => dashboardController.onGetHelpOrReportBug(contactSupportCapability!)
           : null,

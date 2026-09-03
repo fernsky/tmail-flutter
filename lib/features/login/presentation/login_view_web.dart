@@ -24,16 +24,7 @@ class LoginView extends BaseLoginView {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.primaryLightColor,
-      body: Stack(
-        children: [
-          SingleChildScrollView(child: _buildForm(context)),
-          const Positioned(
-            bottom: 12,
-            right: 16,
-            child: SourceCodeLinkWidget(),
-          ),
-        ],
-      ),
+      body: SingleChildScrollView(child: _buildForm(context)),
     );
   }
 

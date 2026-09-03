@@ -109,8 +109,6 @@ class MailboxDashBoardView extends BaseMailboxDashBoardView {
                           leadingWidth: ResponsiveUtils.sidebarMenuWidth,
                           contactSupportCapability: contactSupportCapability,
                           searchForm: SearchInputFormWidget(),
-                          appGridController:
-                              controller.appGridDashboardController,
                           settingActionTypes: ProfileSettingActionType.values,
                           onTapApplicationLogoAction:
                               controller.redirectToInboxAction,
