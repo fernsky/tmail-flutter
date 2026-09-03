@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:core/utils/platform_info.dart';
+import 'package:core/utils/web/context_menu_stub.dart' as web_context_menu;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide OverlayEntry;
-import 'package:universal_html/html.dart' as html;
 
 typedef OnRightMouseClickAction = void Function({RelativeRect? position});
 typedef OnDoubleClickAction = void Function({RelativeRect? position});
@@ -33,7 +33,7 @@ class _SmartInteractionWidgetState extends State<SmartInteractionWidget> {
 
   GlobalKey? _childKey;
   Offset? _lastPointerEventOffset;
-  StreamSubscription<html.MouseEvent>? _contextMenuSubscription;
+  StreamSubscription<web_context_menu.ContextMenuEvent>? _contextMenuSubscription;
 
   @override
   void initState() {
@@ -48,17 +48,17 @@ class _SmartInteractionWidgetState extends State<SmartInteractionWidget> {
 
   void _addWebContextMenuListener() {
     _contextMenuSubscription =
-        html.document.onContextMenu.listen(_onContextMenuListener);
+        web_context_menu.listenDocumentContextMenu(_onContextMenuListener);
   }
 
-  void _onContextMenuListener(html.MouseEvent event) {
+  void _onContextMenuListener(web_context_menu.ContextMenuEvent event) {
     final renderBox =
         _childKey?.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
 
     final localPosition = Offset(
-      event.page.x.toDouble(),
-      event.page.y.toDouble(),
+      event.pageX,
+      event.pageY,
     );
     final renderBoxPosition = renderBox.localToGlobal(Offset.zero);
     final size = renderBox.size;

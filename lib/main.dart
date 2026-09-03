@@ -14,7 +14,7 @@ import 'package:tmail_ui_user/main/localizations/localization_service.dart';
 import 'package:tmail_ui_user/main/main_entry.dart';
 import 'package:tmail_ui_user/main/providers/app_provider_container.dart';
 import 'package:tmail_ui_user/main/runner/app_runner_mobile.dart'
-    if (dart.library.html) 'package:tmail_ui_user/main/runner/app_runner_web.dart';
+    if (dart.library.js_interop) 'package:tmail_ui_user/main/runner/app_runner_web.dart';
 import 'package:tmail_ui_user/main/pages/app_pages.dart';
 import 'package:tmail_ui_user/main/routes/app_routes.dart';
 import 'package:tmail_ui_user/main/routes/route_navigation.dart';

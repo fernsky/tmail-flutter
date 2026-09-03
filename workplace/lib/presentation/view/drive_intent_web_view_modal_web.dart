@@ -2,8 +2,10 @@ import 'package:core/presentation/utils/responsive_utils.dart';
 import 'package:core/presentation/views/button/tmail_button_widget.dart';
 import 'package:core/presentation/views/html_viewer/html_iframe_widget.dart';
 import 'package:flutter/material.dart';
+import 'dart:js_interop';
+
 import 'package:pointer_interceptor/pointer_interceptor.dart';
-import 'package:universal_html/html.dart' as html;
+import 'package:web/web.dart' as web;
 import 'package:workplace/data/model/workplace_intent_request.dart';
 import 'package:workplace/domain/entity/workplace_intent.dart';
 import 'package:workplace/presentation/mixin/drive_intent_message_handler_mixin.dart';
@@ -32,7 +34,7 @@ class DriveIntentWebViewModal extends StatefulWidget {
 
 class _DriveIntentWebViewModalState extends State<DriveIntentWebViewModal>
     with DriveIntentMessageHandlerMixin, WebWindowMessageMixin<DriveIntentWebViewModal> {
-  html.IFrameElement? _iframeElement;
+  web.HTMLIFrameElement? _iframeElement;
 
   @override
   DriveOriginValidator get originValidator => const WebDriveOriginValidator();
@@ -151,8 +153,12 @@ class _DriveIntentWebViewModalState extends State<DriveIntentWebViewModal>
   Future<void> sendAck() async {
     // data: URIs have opaque 'null' origin — postMessage requires '*' for those.
     final targetOrigin = intentOrigin == 'null' ? '*' : intentOrigin;
-    // dart:html's postMessage structured-clones the Map into a real JS
-    // object, which is what Drive's getFilePickerConfig expects.
-    _iframeElement?.contentWindow?.postMessage(widget.filePickerConfig.toJson(), targetOrigin);
+    // .jsify() structured-clones the Map into a real JS object, which is
+    // what Drive's getFilePickerConfig expects -- dart:html's postMessage
+    // used to do this conversion implicitly.
+    _iframeElement?.contentWindow?.postMessage(
+      widget.filePickerConfig.toJson().jsify(),
+      targetOrigin.toJS,
+    );
   }
 }

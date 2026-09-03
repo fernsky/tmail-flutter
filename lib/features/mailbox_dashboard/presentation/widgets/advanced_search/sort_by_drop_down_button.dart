@@ -29,8 +29,9 @@ class SortByDropDownButton extends StatelessWidget {
         child: DropdownButton2<EmailSortOrderType>(
           isExpanded: true,
           items: EmailSortOrderType.values
-            .map((sortType) => DropdownMenuItem<EmailSortOrderType>(
+            .map((sortType) => DropdownItem<EmailSortOrderType>(
               value: sortType,
+              height: SortByDropdownStyle.height,
               enabled: sortType != sortOrderSelected,
               child: PointerInterceptor(
                 child: Row(
@@ -54,7 +55,7 @@ class SortByDropDownButton extends StatelessWidget {
                 )
               )
             )).toList(),
-          value: sortOrderSelected,
+          valueListenable: ValueNotifier<EmailSortOrderType?>(sortOrderSelected),
           customButton: Container(
             height: AdvancedSearchInputFormStyle.inputFieldHeight,
             decoration: BoxDecoration(

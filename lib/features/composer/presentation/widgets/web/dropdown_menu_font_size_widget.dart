@@ -24,10 +24,11 @@ class DropdownMenuFontSizeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton2<int>(
-        value: selectedFontSize,
+        valueListenable: ValueNotifier<int?>(selectedFontSize),
         items: RichTextWebController.fontSizeList.map((value) {
-          return DropdownMenuItem<int>(
+          return DropdownItem<int>(
             value: value,
+            height: DropdownMenuFontSizeWidgetStyle.menuItemHeight,
             child: ItemMenuFontSizeWidget(
               value: value,
               selectedValue: selectedFontSize
@@ -47,7 +48,6 @@ class DropdownMenuFontSizeWidget extends StatelessWidget {
           ),
         ),
         menuItemStyleData: const MenuItemStyleData(
-          height: DropdownMenuFontSizeWidgetStyle.menuItemHeight,
           padding: DropdownMenuFontSizeWidgetStyle.menuItemPadding,
         )
       ),

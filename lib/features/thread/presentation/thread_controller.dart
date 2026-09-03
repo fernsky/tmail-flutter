@@ -37,7 +37,7 @@ import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/model/sear
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/model/search/search_email_filter.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/notifier/search_view_state_notifier.dart';
 import 'package:tmail_ui_user/features/network_connection/presentation/network_connection_controller.dart'
-  if (dart.library.html) 'package:tmail_ui_user/features/network_connection/presentation/web_network_connection_controller.dart';
+  if (dart.library.js_interop) 'package:tmail_ui_user/features/network_connection/presentation/web_network_connection_controller.dart';
 import 'package:tmail_ui_user/features/push_notification/presentation/websocket/web_socket_message.dart';
 import 'package:tmail_ui_user/features/push_notification/presentation/websocket/web_socket_queue_handler.dart';
 import 'package:tmail_ui_user/features/labels/presentation/delegates/add_list_label_to_list_emails_delegate.dart';
@@ -96,8 +96,8 @@ import 'package:tmail_ui_user/main/routes/app_routes.dart';
 import 'package:tmail_ui_user/main/routes/navigation_router.dart';
 import 'package:tmail_ui_user/main/routes/route_navigation.dart';
 import 'package:tmail_ui_user/main/routes/route_utils.dart';
+import 'package:core/utils/web/browser_actions_stub.dart' as browser;
 import 'package:tmail_ui_user/main/utils/app_config.dart';
-import 'package:universal_html/html.dart' as html;
 
 part 'thread_search_execution_observer.dart';
 
@@ -565,7 +565,7 @@ class ThreadController extends BaseController with EmailActionController {
     if (!PlatformInfo.isWeb) {
       return _isNonWebAutoLoadMore;
     }
-    final browserInnerHeight = html.window.innerHeight ?? 0;
+    final browserInnerHeight = browser.windowInnerHeight;
     final currentListEmails = mailboxDashBoardController.emailsInCurrentMailbox;
     final totalHeightListEmails = currentListEmails.isEmpty
         ? 0

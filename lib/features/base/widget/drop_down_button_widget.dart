@@ -82,8 +82,9 @@ class DropDownButtonWidget<T> extends StatelessWidget {
                 ])
               : null,
           items: items
-              .map((item) => DropdownMenuItem<T>(
+              .map((item) => DropdownItem<T>(
                     value: item,
+                    height: heightItem,
                     child: PointerInterceptor(
                       child: Container(
                         color: Colors.transparent,
@@ -108,7 +109,7 @@ class DropDownButtonWidget<T> extends StatelessWidget {
                     ),
                   ))
               .toList(),
-          value: itemSelected,
+          valueListenable: ValueNotifier<T?>(itemSelected),
           customButton: supportSelectionIcon
             ? Tooltip(
                 message: tooltip,
@@ -168,7 +169,6 @@ class DropDownButtonWidget<T> extends StatelessWidget {
           ),
           iconStyleData: IconStyleData(icon: iconArrowDown ?? SvgPicture.asset(imagePaths.icDropDown)),
           menuItemStyleData: MenuItemStyleData(
-            height: heightItem,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             overlayColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) => supportSelectionIcon ? Colors.white : Colors.black12)
           ),

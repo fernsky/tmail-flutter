@@ -38,7 +38,7 @@ class DateDropDownButton extends StatelessWidget {
           items: receiveTimeTypes
               .map((item) => _buildItemMenu(context, item))
               .toList(),
-          value: receiveTimeTypeSelected,
+          valueListenable: ValueNotifier<EmailReceiveTimeType?>(receiveTimeTypeSelected),
           customButton: Container(
             height: 40,
             decoration: BoxDecoration(
@@ -93,7 +93,6 @@ class DateDropDownButton extends StatelessWidget {
             ),
           ),
           menuItemStyleData: const MenuItemStyleData(
-            height: 44,
             padding: EdgeInsets.symmetric(horizontal: 12),
           ),
         ),
@@ -101,12 +100,13 @@ class DateDropDownButton extends StatelessWidget {
     );
   }
 
-  DropdownMenuItem<EmailReceiveTimeType> _buildItemMenu(
+  DropdownItem<EmailReceiveTimeType> _buildItemMenu(
     BuildContext context,
     EmailReceiveTimeType receiveTime,
   ) {
-    return DropdownMenuItem<EmailReceiveTimeType>(
+    return DropdownItem<EmailReceiveTimeType>(
       value: receiveTime,
+      height: 44,
       enabled: receiveTime != receiveTimeTypeSelected,
       child: PointerInterceptor(
         child: Row(

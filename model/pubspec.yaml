@@ -36,13 +36,13 @@ dependencies:
   jmap_dart_client:
 
   ### Dependencies from pub.dev ###
-  cupertino_icons: 1.0.6
+  cupertino_icons: ^1.0.9
 
   equatable: 2.0.5
 
   quiver: 3.2.1
 
-  intl: 0.20.2
+  intl: ^0.20.3
 
   uri: 1.0.0
 
@@ -50,19 +50,19 @@ dependencies:
 
   http_parser: 4.0.2
 
-  mime: 1.0.4
+  mime: ^2.1.0
 
   collection: 1.19.1
 
   dartz: 0.10.1
 
-  get: 4.6.6
+  get: ^4.7.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: 2.0.1
+  flutter_lints: ^2.0.3
 
   build_runner: ^2.15.0
 

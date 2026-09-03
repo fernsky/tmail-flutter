@@ -34,7 +34,7 @@ class DefaultEmailAddressDropDownButton extends StatelessWidget {
           child: DropdownButton2<EmailAddress>(
             isExpanded: true,
             items: emailAddresses.map(_buildItemMenu).toList(),
-            value: emailAddressSelected,
+            valueListenable: ValueNotifier<EmailAddress?>(emailAddressSelected),
             customButton: Container(
               height: 40,
               decoration: BoxDecoration(
@@ -85,7 +85,6 @@ class DefaultEmailAddressDropDownButton extends StatelessWidget {
               ),
             ),
             menuItemStyleData: const MenuItemStyleData(
-              height: 44,
               padding: EdgeInsets.symmetric(horizontal: 12),
             ),
           ),
@@ -116,9 +115,10 @@ class DefaultEmailAddressDropDownButton extends StatelessWidget {
     }
   }
 
-  DropdownMenuItem<EmailAddress> _buildItemMenu(EmailAddress emailAddress) {
-    return DropdownMenuItem<EmailAddress>(
+  DropdownItem<EmailAddress> _buildItemMenu(EmailAddress emailAddress) {
+    return DropdownItem<EmailAddress>(
       value: emailAddress,
+      height: 44,
       enabled: emailAddress != emailAddressSelected,
       child: PointerInterceptor(
         child: Row(

@@ -4,7 +4,7 @@ import 'package:core/utils/logging/log_handler.dart';
 import 'package:core/utils/logging/log_level.dart';
 import 'package:core/utils/logging/log_record.dart';
 import 'package:core/utils/platform_info.dart';
-import 'package:universal_html/html.dart' as html;
+import 'package:core/utils/web/console_log_stub.dart' as web_console;
 
 const _appLogName = '[TwakeMail]';
 
@@ -55,17 +55,17 @@ class ConsoleLogHandler extends LogHandler {
     switch (level) {
       case Level.error:
       case Level.critical:
-        html.window.console.error('$_appLogName $value');
+        web_console.printToWebConsole('error', '$_appLogName $value');
         break;
       case Level.warning:
-        html.window.console.warn('$_appLogName $value');
+        web_console.printToWebConsole('warn', '$_appLogName $value');
         break;
       case Level.info:
-        html.window.console.info('$_appLogName $value');
+        web_console.printToWebConsole('info', '$_appLogName $value');
         break;
       case Level.debug:
       case Level.trace:
-        html.window.console.debug('$_appLogName $value');
+        web_console.printToWebConsole('debug', '$_appLogName $value');
         break;
     }
   }

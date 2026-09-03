@@ -1,7 +1,7 @@
 import 'package:core/utils/app_logger.dart';
+import 'package:core/utils/web/user_agent_stub.dart' as user_agent;
 import 'package:core/utils/web_renderer/canvas_kit.dart';
 import 'package:flutter/foundation.dart';
-import 'package:universal_html/html.dart' as universal_html;
 
 abstract class PlatformInfo {
   @visibleForTesting
@@ -47,7 +47,7 @@ abstract class PlatformInfo {
   }
 
   static String get userAgent =>
-      isWeb ? universal_html.window.navigator.userAgent.toLowerCase() : '';
+      isWeb ? user_agent.userAgent.toLowerCase() : '';
 
   /// Web browser on a mobile phone
   static bool get isWebMobile =>

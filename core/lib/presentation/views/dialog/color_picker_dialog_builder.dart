@@ -86,6 +86,8 @@ class ColorPickerDialogBuilder {
                     color: _currentColor.value,
                     colorCodeHasColor: true,
                     shouldUpdate: _shouldUpdate,
+                    requestFocus: false,
+                    focusedEditHasNoColor: false,
                     onColorChanged: (Color color) {
                       if (AppColor.listColorsPicker.any((element) => element.toInt() == color.toInt())) {
                         _shouldUpdate = true;

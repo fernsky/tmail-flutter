@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
@@ -5,13 +6,13 @@ import 'package:core/utils/app_logger.dart';
 import 'package:core/utils/html/html_template.dart';
 import 'package:core/utils/html/html_utils.dart';
 import 'package:core/utils/platform_info.dart';
+import 'package:core/utils/web/window_message_stub.dart' as web_message;
 import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:tmail_ui_user/features/composer/presentation/mixin/text_selection_mixin.dart';
 import 'package:tmail_ui_user/features/composer/presentation/widgets/web/signature_tooltip_widget.dart';
 import 'package:tmail_ui_user/features/composer/presentation/widgets/web/web_editor_script_plan.dart';
 import 'package:tmail_ui_user/main/localizations/app_localizations.dart';
-import 'package:universal_html/html.dart' hide VoidCallback;
 import 'package:workplace/presentation/utils/workplace_scripts.dart';
 
 typedef OnChangeContentEditorAction = Function(String? text);
@@ -87,7 +88,7 @@ class _WebEditorState extends State<WebEditorWidget> with TextSelectionMixin {
 
   late HtmlEditorController _editorController;
   bool _editorListenerRegistered = false;
-  Function(Event)? _editorListener;
+  StreamSubscription<web_message.MessageEvent>? _editorListenerSubscription;
 
   OverlayEntry? _signatureTooltipEntry;
   final GlobalKey _signatureTooltipKey = GlobalKey();
@@ -113,29 +114,25 @@ class _WebEditorState extends State<WebEditorWidget> with TextSelectionMixin {
       script: registerSelectionChange.script,
     );
 
-    _editorListener = (event) {
+    _editorListenerSubscription = web_message.listenWindowMessage((event) {
       try {
-        if (event is MessageEvent) {
-          final data = event.data is Map ? event.data : jsonDecode(event.data);
+        final data = event.data is Map ? event.data : jsonDecode(event.data);
 
-          if (data['name'] == HtmlUtils.registerDropListener.name) {
-            _editorController.evaluateJavascriptWeb(HtmlUtils.removeLineHeight1px.name);
-          } else if (data['name'] == _selectionChangeScript.name
-              && data['viewId'] == _createdViewId) {
-            handleSelectionChange(data);
-          } else if (data['type'] == 'toDart: driveCardDeleted'
-              && data['viewId'] == _createdViewId) {
-            _syncContentAfterDriveCardDeleted();
-          }
+        if (data['name'] == HtmlUtils.registerDropListener.name) {
+          _editorController.evaluateJavascriptWeb(HtmlUtils.removeLineHeight1px.name);
+        } else if (data['name'] == _selectionChangeScript.name
+            && data['viewId'] == _createdViewId) {
+          handleSelectionChange(data);
+        } else if (data['type'] == 'toDart: driveCardDeleted'
+            && data['viewId'] == _createdViewId) {
+          _syncContentAfterDriveCardDeleted();
         }
       } catch (e) {
         logWarning(
           '_WebEditorState::_editorListener: Unable to parse message data = $e',
         );
       }
-    };
-
-    window.addEventListener("message", _editorListener!);
+    });
   }
 
   @override
@@ -153,10 +150,8 @@ class _WebEditorState extends State<WebEditorWidget> with TextSelectionMixin {
       HtmlUtils.unregisterDropListener.name);
     _editorController.evaluateJavascriptWeb(
       WorkplaceScripts.unregisterDriveCardDeleteOverlay.name);
-    if (_editorListener != null) {
-      window.removeEventListener("message", _editorListener!);
-      _editorListener = null;
-    }
+    _editorListenerSubscription?.cancel();
+    _editorListenerSubscription = null;
     _hideSignatureTooltip();
     super.dispose();
   }

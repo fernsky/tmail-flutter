@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:core/domain/exceptions/web_session_exception.dart';
+import 'package:core/utils/web/key_value_storage_stub.dart';
 import 'package:jmap_dart_client/jmap/account_id.dart';
 import 'package:jmap_dart_client/jmap/core/user_name.dart';
 import 'package:model/email/email_action_type.dart';
@@ -8,10 +9,10 @@ import 'package:tmail_ui_user/features/caching/utils/cache_utils.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/data/datasource/composer_cache_datasource.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/data/model/composer_cache.dart';
 import 'package:tmail_ui_user/main/exceptions/thrower/exception_thrower.dart';
-import 'package:universal_html/html.dart' as html;
 
 class ComposerSessionCacheDatasourceImpl extends ComposerCacheDatasource {
   final ExceptionThrower _exceptionThrower;
+  final WebKeyValueStorage _sessionStorage = WebKeyValueStorage.session();
 
   ComposerSessionCacheDatasourceImpl(this._exceptionThrower);
 
@@ -26,7 +27,7 @@ class ComposerSessionCacheDatasourceImpl extends ComposerCacheDatasource {
         accountId.asString,
         userName.value).toString();
 
-      final listEntries = html.window.sessionStorage.entries.where(
+      final listEntries = _sessionStorage.entries.where(
         (entry) => entry.key.startsWith(keyWithIdentity),
       );
 
@@ -53,7 +54,7 @@ class ComposerSessionCacheDatasourceImpl extends ComposerCacheDatasource {
         userName.value,
         composerCache.composerId,
       ).toString();
-      html.window.sessionStorage[composerCacheKey] = jsonEncode(composerCache.toJson());
+      _sessionStorage.setItem(composerCacheKey, jsonEncode(composerCache.toJson()));
     }).catchError(_exceptionThrower.throwException);
   }
 
@@ -61,7 +62,13 @@ class ComposerSessionCacheDatasourceImpl extends ComposerCacheDatasource {
   Future<void> removeAllComposerCache(AccountId accountId, UserName userName) {
     return Future.sync(() {
       final keyWithIdentity = _buildKeyPrefix(accountId, userName);
-      html.window.sessionStorage.removeWhere((key, value) => key.startsWith(keyWithIdentity));
+      final keysToRemove = _sessionStorage.entries
+        .where((entry) => entry.key.startsWith(keyWithIdentity))
+        .map((entry) => entry.key)
+        .toList();
+      for (final key in keysToRemove) {
+        _sessionStorage.removeItem(key);
+      }
     }).catchError(_exceptionThrower.throwException);
   }
 
@@ -69,7 +76,7 @@ class ComposerSessionCacheDatasourceImpl extends ComposerCacheDatasource {
   Future<void> removeComposerCacheById(AccountId accountId, UserName userName, String composerId) {
     return Future.sync(() {
       final composerCacheKey = _buildComposerKey(accountId, userName, composerId);
-      html.window.sessionStorage.remove(composerCacheKey);
+      _sessionStorage.removeItem(composerCacheKey);
     }).catchError(_exceptionThrower.throwException);
   }
 

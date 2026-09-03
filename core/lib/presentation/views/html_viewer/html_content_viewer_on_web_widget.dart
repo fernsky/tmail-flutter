@@ -12,8 +12,8 @@ import 'package:core/utils/html/html_interaction.dart';
 import 'package:core/utils/html/html_template.dart';
 import 'package:core/utils/html/html_utils.dart';
 import 'package:core/utils/platform_info.dart';
+import 'package:core/utils/web/window_message_stub.dart' as web_message;
 import 'package:flutter/cupertino.dart';
-import 'package:universal_html/html.dart' as html;
 
 typedef OnClickHyperLinkAction = Function(Uri?);
 typedef OnMailtoClicked = void Function(Uri? uri);
@@ -117,7 +117,7 @@ class _HtmlContentViewerOnWebState extends State<HtmlContentViewerOnWeb>
   String? _htmlData;
   bool _isLoading = true;
   late double minHeight;
-  late final StreamSubscription<html.MessageEvent> _onMessageSubscription;
+  late final StreamSubscription<web_message.MessageEvent> _onMessageSubscription;
   bool _iframeLoaded = false;
   static const String iframeOnLoadMessage = 'iframeHasBeenLoaded';
   static const String onClickHyperLinkName = 'onClickHyperLink';
@@ -138,10 +138,10 @@ class _HtmlContentViewerOnWebState extends State<HtmlContentViewerOnWeb>
       );
     }
     _setUpWeb();
-    _onMessageSubscription = html.window.onMessage.listen(_handleMessageEvent);
+    _onMessageSubscription = web_message.listenWindowMessage(_handleMessageEvent);
   }
 
-  void _handleMessageEvent(html.MessageEvent event) {
+  void _handleMessageEvent(web_message.MessageEvent event) {
     try {
       final data = json.decode(event.data);
 

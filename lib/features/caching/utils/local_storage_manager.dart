@@ -1,27 +1,25 @@
-
-import 'package:collection/collection.dart';
+import 'package:core/utils/web/key_value_storage_stub.dart';
 import 'package:tmail_ui_user/features/caching/exceptions/local_storage_exception.dart';
-import 'package:universal_html/html.dart' as html;
 
 class LocalStorageManager {
 
+  final WebKeyValueStorage _localStorage = WebKeyValueStorage.local();
+
   void save(String key, String value) {
-    html.window.localStorage.addAll({key: value});
+    _localStorage.setItem(key, value);
   }
 
   String get(String key) {
-    final entry = html.window.localStorage
-      .entries
-      .firstWhereOrNull((entry) => entry.key == key);
+    final value = _localStorage.getItem(key);
 
-    if (entry != null) {
-      return entry.value;
+    if (value != null) {
+      return value;
     } else {
       throw const NotFoundDataWithThisKeyException();
     }
   }
 
   void remove(String key) {
-    html.window.localStorage.remove(key);
+    _localStorage.removeItem(key);
   }
 }

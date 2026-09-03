@@ -17,13 +17,13 @@ import 'package:tmail_ui_user/features/rules_filter_creator/presentation/rules_f
 import 'package:tmail_ui_user/features/rules_filter_creator/presentation/rules_filter_creator_view.dart' deferred as rules_filter_creator;
 import 'package:tmail_ui_user/features/login/presentation/login_bindings.dart';
 import 'package:tmail_ui_user/features/login/presentation/login_view.dart'
-  if (dart.library.html) 'package:tmail_ui_user/features/login/presentation/login_view_web.dart' deferred as login;
+  if (dart.library.js_interop) 'package:tmail_ui_user/features/login/presentation/login_view_web.dart' deferred as login;
 import 'package:tmail_ui_user/features/mailbox_creator/presentation/mailbox_creator_bindings.dart';
 import 'package:tmail_ui_user/features/mailbox_creator/presentation/mailbox_creator_view.dart' deferred as mailbox_creator;
 import 'package:tmail_ui_user/features/identity_creator/presentation/identity_creator_view.dart' deferred as identity_creator;
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/bindings/mailbox_dashboard_bindings.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/mailbox_dashboard_view.dart'
-  if (dart.library.html) 'package:tmail_ui_user/features/mailbox_dashboard/presentation/mailbox_dashboard_view_web.dart' deferred as mailbox_dashboard;
+  if (dart.library.js_interop) 'package:tmail_ui_user/features/mailbox_dashboard/presentation/mailbox_dashboard_view_web.dart' deferred as mailbox_dashboard;
 import 'package:tmail_ui_user/features/manage_account/presentation/manage_account_dashboard_bindings.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/manage_account_dashboard_view.dart' deferred as manage_account_dashboard;
 import 'package:tmail_ui_user/features/search/mailbox/presentation/search_mailbox_bindings.dart';

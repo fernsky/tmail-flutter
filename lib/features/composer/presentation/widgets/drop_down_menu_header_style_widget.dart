@@ -32,8 +32,9 @@ class DropDownMenuHeaderStyleWidget extends StatelessWidget {
       child: DropdownButton2<HeaderStyleType>(
         isExpanded: true,
         items: items
-            .map((item) => DropdownMenuItem<HeaderStyleType>(
+            .map((item) => DropdownItem<HeaderStyleType>(
                   value: item,
+                  height: heightItem,
                   child: PointerInterceptor(
                     child: Container(
                       color: Colors.transparent,
@@ -62,9 +63,8 @@ class DropDownMenuHeaderStyleWidget extends StatelessWidget {
             thumbVisibility: WidgetStateProperty.all<bool>(true),
           )
         ),
-        menuItemStyleData: MenuItemStyleData(
-          height: heightItem,
-          padding: const EdgeInsets.symmetric(horizontal: 12)
+        menuItemStyleData: const MenuItemStyleData(
+          padding: EdgeInsets.symmetric(horizontal: 12)
         )
       ),
     );

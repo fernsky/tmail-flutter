@@ -6,13 +6,14 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:html_unescape/html_unescape.dart';
 
-import 'js_interop_stub.dart' if (dart.library.html) 'dart:js_interop';
+import 'js_interop_stub.dart' if (dart.library.js_interop) 'dart:js_interop';
 import 'dart:typed_data';
 
 import 'package:core/data/constants/constant.dart';
 import 'package:core/utils/app_logger.dart';
+import 'package:core/utils/web/browser_actions_stub.dart' as browser;
+import 'package:core/utils/web/user_agent_stub.dart' as user_agent;
 import 'package:flutter/material.dart';
-import 'package:universal_html/html.dart' as html;
 
 class HtmlUtils {
   static const validTags = [
@@ -688,13 +689,7 @@ class HtmlUtils {
   static String generateSVGImageData(String base64Data) => 'data:image/svg+xml;base64,$base64Data';
 
   static void openNewTabHtmlDocument(String htmlDocument) {
-    final blob = html.Blob([htmlDocument], Constant.textHtmlMimeType);
-
-    final url = html.Url.createObjectUrlFromBlob(blob);
-
-    html.window.open(url, '_blank');
-
-    html.Url.revokeObjectUrl(url);
+    browser.openBlobInNewTab(htmlDocument, Constant.textHtmlMimeType);
   }
 
   static String chromePdfViewer(Uint8List bytes, String fileName) {
@@ -865,11 +860,7 @@ class HtmlUtils {
     required String fileName,
     String? mimeType
   }) {
-    final blob = html.Blob([bytes], mimeType);
-    final file = html.File([blob], fileName, {'type': mimeType});
-    final url = html.Url.createObjectUrl(file);
-    html.window.open(url, '_blank');
-    html.Url.revokeObjectUrl(url);
+    browser.openFileBlobInNewTab(bytes, fileName, mimeType);
   }
 
   static const String _pdfContainerStyle = '''
@@ -978,14 +969,12 @@ class HtmlUtils {
   ) {
     try {
       if (isFullScreen) {
-        html.window.open(url, '_blank');
-
-        html.Url.revokeObjectUrl(url);
+        browser.windowOpen(url, '_blank');
         return true;
       }
 
-      final screenWidth = html.window.screen?.width ?? width;
-      final screenHeight = html.window.screen?.height ?? height;
+      final screenWidth = browser.screenWidth ?? width;
+      final screenHeight = browser.screenHeight ?? height;
 
       int left, top;
 
@@ -999,9 +988,7 @@ class HtmlUtils {
 
       final options = 'width=$width,height=$height,top=$top,left=$left';
 
-      html.window.open(url, '_blank', options);
-
-      html.Url.revokeObjectUrl(url);
+      browser.windowOpen(url, '_blank', options);
 
       return true;
     } catch (e) {
@@ -1012,10 +999,7 @@ class HtmlUtils {
 
   static void setWindowBrowserTitle(String title) {
     try {
-      final titleElements = html.window.document.getElementsByTagName('title');
-      if (titleElements.isNotEmpty) {
-        titleElements.first.text = title;
-      }
+      browser.setWindowBrowserTitle(title);
     } catch (e) {
       logWarning('AppUtils::setWindowBrowserTitle:Exception = $e');
     }
@@ -1040,7 +1024,7 @@ class HtmlUtils {
   /// Returns true if the browser is Safari and its major version is less than 17.
   static bool isSafariBelow17() {
     try {
-      final userAgent = html.window.navigator.userAgent;
+      final userAgent = user_agent.userAgent;
       log('HtmlUtils::isOldSafari:UserAgent = $userAgent');
       final isSafari = userAgent.contains('Safari') && !userAgent.contains('Chrome');
       if (!isSafari) return false;
@@ -1066,15 +1050,19 @@ class HtmlUtils {
     }
 
     try {
-      html.DomParser().parseFromString(htmlString, 'text/html');
+      parser.parse(htmlString);
     } catch (e) {
       return htmlString;
     }
 
     final containerElement = '<div class="quote-toggle-container" >$htmlString</div>';
 
-    final containerDom = html.DomParser().parseFromString(containerElement, 'text/html');
-    html.ElementList blockquotes = containerDom.querySelectorAll('.quote-toggle-container > blockquote');
+    // Pure-Dart parsing (package:html), not the browser DOM: this method
+    // only ever needs to reshape a string, and package:html does that
+    // without depending on a JS-interop DOM API at all -- it compiles
+    // identically under dart2js and dart2wasm, and even off-web.
+    final containerDom = parser.parse(containerElement);
+    List<dom.Element> blockquotes = containerDom.querySelectorAll('.quote-toggle-container > blockquote');
     int currentSearchLevel = 1;
 
     while (blockquotes.isEmpty) {
@@ -1095,8 +1083,7 @@ class HtmlUtils {
       </button>''';
 
     // Parse the button HTML content as a fragment
-    final tempDoc =
-        html.DomParser().parseFromString(buttonHtmlContent, 'text/html');
+    final tempDoc = parser.parse(buttonHtmlContent);
 
     final buttonElement = tempDoc.querySelector('.quote-toggle-button');
 

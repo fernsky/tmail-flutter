@@ -4,7 +4,9 @@ import 'dart:math';
 
 import 'package:core/core.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
-import 'package:dartz/dartz.dart';
+// State hidden: dartz now exports its own State monad, ambiguous against
+// Flutter's widget State used below (GlobalKey<State<DropdownButton2>>).
+import 'package:dartz/dartz.dart' hide State;
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -117,7 +119,7 @@ import 'package:tmail_ui_user/features/manage_account/domain/state/get_all_ident
 import 'package:tmail_ui_user/features/manage_account/domain/usecases/get_all_identities_interactor.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/extensions/identity_extension.dart';
 import 'package:tmail_ui_user/features/network_connection/presentation/network_connection_controller.dart'
-  if (dart.library.html) 'package:tmail_ui_user/features/network_connection/presentation/web_network_connection_controller.dart';
+  if (dart.library.js_interop) 'package:tmail_ui_user/features/network_connection/presentation/web_network_connection_controller.dart';
 import 'package:tmail_ui_user/features/server_settings/domain/usecases/get_server_setting_interactor.dart';
 import 'package:tmail_ui_user/features/upload/domain/exceptions/pick_file_exception.dart';
 import 'package:tmail_ui_user/features/upload/domain/exceptions/upload_exception.dart';
@@ -136,6 +138,7 @@ import 'package:tmail_ui_user/main/exceptions/remote/authentication_exception.da
 import 'package:tmail_ui_user/main/localizations/app_localizations.dart';
 import 'package:tmail_ui_user/main/providers/app_provider_container.dart';
 import 'package:tmail_ui_user/main/routes/route_navigation.dart';
+import 'package:core/utils/web/browser_actions_stub.dart' as browser;
 import 'package:tmail_ui_user/main/universal_import/html_stub.dart' as html;
 import 'package:workplace/domain/entity/drive_document.dart';
 import 'package:tmail_ui_user/features/composer/presentation/manager/drive_attachment_handler.dart';
@@ -227,7 +230,7 @@ class ComposerController extends BaseController
   final GlobalKey<TagsEditorState> keyBccEmailTagEditor = GlobalKey<TagsEditorState>();
   final GlobalKey<TagsEditorState> keyReplyToEmailTagEditor = GlobalKey<TagsEditorState>();
   final GlobalKey headerEditorMobileWidgetKey = GlobalKey();
-  final GlobalKey<DropdownButton2State> identityDropdownKey = GlobalKey<DropdownButton2State>();
+  final GlobalKey<State<DropdownButton2<dynamic>>> identityDropdownKey = GlobalKey<State<DropdownButton2<dynamic>>>();
   final double defaultPaddingCoordinateYCursorEditor = 8;
 
   FocusNode? subjectEmailInputFocusNode;
@@ -242,10 +245,10 @@ class ComposerController extends BaseController
   FocusNode? replyToAddressFocusNodeKeyboard;
   FocusNode? keyboardShortcutFocusNode;
 
-  StreamSubscription<html.Event>? _subscriptionOnDragEnter;
-  StreamSubscription<html.Event>? _subscriptionOnDragOver;
-  StreamSubscription<html.Event>? _subscriptionOnDragLeave;
-  StreamSubscription<html.Event>? _subscriptionOnDrop;
+  StreamSubscription? _subscriptionOnDragEnter;
+  StreamSubscription? _subscriptionOnDragOver;
+  StreamSubscription? _subscriptionOnDragLeave;
+  StreamSubscription? _subscriptionOnDrop;
   StreamSubscription<html.Event>? _subscriptionOnBlur;
   StreamSubscription<String>? _composerCacheListener;
 
@@ -498,7 +501,7 @@ class ComposerController extends BaseController
     _subscriptionOnDragEnter = html.window.onDragEnter.listen((event) {
       event.preventDefault();
 
-      if (event.dataTransfer.types.validateFilesTransfer) {
+      if (browser.dragEventFileTypes(event).validateFilesTransfer) {
         mailboxDashBoardController.localFileDraggableAppState.value = DraggableAppState.active;
       }
     });
@@ -506,7 +509,7 @@ class ComposerController extends BaseController
     _subscriptionOnDragOver = html.window.onDragOver.listen((event) {
       event.preventDefault();
 
-      if (event.dataTransfer.types.validateFilesTransfer) {
+      if (browser.dragEventFileTypes(event).validateFilesTransfer) {
         mailboxDashBoardController.localFileDraggableAppState.value = DraggableAppState.active;
       }
     });
@@ -514,7 +517,7 @@ class ComposerController extends BaseController
     _subscriptionOnDragLeave = html.window.onDragLeave.listen((event) {
       event.preventDefault();
 
-      if (event.dataTransfer.types.validateFilesTransfer) {
+      if (browser.dragEventFileTypes(event).validateFilesTransfer) {
         mailboxDashBoardController.localFileDraggableAppState.value = DraggableAppState.inActive;
       }
     });
@@ -522,14 +525,20 @@ class ComposerController extends BaseController
     _subscriptionOnDrop = html.window.onDrop.listen((event) {
       event.preventDefault();
 
-      if (event.dataTransfer.types.validateFilesTransfer) {
+      if (browser.dragEventFileTypes(event).validateFilesTransfer) {
         mailboxDashBoardController.localFileDraggableAppState.value = DraggableAppState.inActive;
       }
     });
 
     // https://github.com/flutter/flutter/issues/155265#issuecomment-2417101524
+    //
+    // dynamic, not html.Element: universal_html's Element declares blur()
+    // directly, but package:web only puts it on HTMLElement (a subtype) --
+    // dynamic dispatch is what lets this one call compile against both
+    // conditional branches.
     _subscriptionOnBlur = html.window.onBlur.listen((event) {
-      html.document.activeElement?.blur();
+      final dynamic activeElement = html.document.activeElement;
+      activeElement?.blur();
     });
   }
 

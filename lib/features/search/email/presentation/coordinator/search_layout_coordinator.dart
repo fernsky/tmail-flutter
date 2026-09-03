@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core/presentation/utils/responsive_utils.dart';
+import 'package:core/utils/web/browser_actions_stub.dart' as browser;
 import 'package:flutter/widgets.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/model/dashboard_routes.dart';
 import 'package:tmail_ui_user/features/search/email/presentation/coordinator/get_search_email_layout_owner_registry.dart';
@@ -8,7 +9,6 @@ import 'package:tmail_ui_user/features/search/email/presentation/coordinator/sea
 import 'package:tmail_ui_user/features/search/email/presentation/coordinator/search_layout_callbacks.dart';
 import 'package:tmail_ui_user/features/search/email/presentation/coordinator/search_layout_transition_state.dart';
 import 'package:tmail_ui_user/features/search/email/presentation/service/search_executor_service.dart';
-import 'package:universal_html/html.dart' as html;
 
 /// Coordinates responsive search ownership without owning mailbox/thread data.
 class SearchLayoutCoordinator {
@@ -30,7 +30,7 @@ class SearchLayoutCoordinator {
   /// never clears that list.
   bool _desktopSearchPresentationActive = false;
 
-  StreamSubscription<html.Event>? _resizeSubscription;
+  StreamSubscription<void>? _resizeSubscription;
 
   SearchLayoutCoordinator({
     required ResponsiveUtils responsiveUtils,
@@ -55,14 +55,14 @@ class SearchLayoutCoordinator {
         _mobileOwnerRegistry = mobileOwnerRegistry,
         _onBrowserResize = onBrowserResize;
 
-  double get _currentBrowserWidth => (html.window.innerWidth ?? 0).toDouble();
+  double get _currentBrowserWidth => browser.windowInnerWidth.toDouble();
 
   void start() {
     final isDesktop = _responsiveUtils.isMatchedDesktopWidth(
       _currentBrowserWidth,
     );
     _transitionState.initialize(isDesktop);
-    _resizeSubscription = html.window.onResize.listen((_) {
+    _resizeSubscription = browser.listenWindowResize(() {
       handleBrowserWidthChange(_currentBrowserWidth);
       _onBrowserResize?.call();
     });

@@ -25,8 +25,9 @@ class LabelDropDownStyle {
     end: 8,
   );
   static const EdgeInsetsGeometry dropdownPadding = EdgeInsets.all(12);
+  // height moved to each DropdownItem: dropdown_button2 3.x dropped
+  // MenuItemStyleData.height in favour of a per-item height.
   static const MenuItemStyleData menuItemStyleData = MenuItemStyleData(
-    height: height,
     padding: EdgeInsets.symmetric(horizontal: 12),
   );
 

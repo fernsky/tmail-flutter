@@ -71,6 +71,7 @@ import 'package:tmail_ui_user/main/bindings/network/binding_tag.dart';
 import 'package:tmail_ui_user/main/error/capability_validator.dart';
 import 'package:tmail_ui_user/main/localizations/app_localizations.dart';
 import 'package:tmail_ui_user/main/routes/route_navigation.dart';
+import 'package:core/utils/web/browser_actions_stub.dart' as browser;
 import 'package:tmail_ui_user/main/universal_import/html_stub.dart' as html hide File;
 
 class IdentityCreatorController extends BaseController with DragDropFileMixin implements BeforeReconnectHandler {
@@ -102,10 +103,10 @@ class IdentityCreatorController extends BaseController with DragDropFileMixin im
 
   RichTextMobileTabletController? richTextMobileTabletController;
   RichTextWebController? richTextWebController;
-  StreamSubscription<html.Event>? _subscriptionOnDragEnter;
-  StreamSubscription<html.Event>? _subscriptionOnDragOver;
-  StreamSubscription<html.Event>? _subscriptionOnDragLeave;
-  StreamSubscription<html.Event>? _subscriptionOnDrop;
+  StreamSubscription? _subscriptionOnDragEnter;
+  StreamSubscription? _subscriptionOnDragOver;
+  StreamSubscription? _subscriptionOnDragLeave;
+  StreamSubscription? _subscriptionOnDrop;
   final _beforeReconnectManager = Get.find<BeforeReconnectManager>();
 
   String? _nameIdentity;
@@ -227,7 +228,7 @@ class IdentityCreatorController extends BaseController with DragDropFileMixin im
     _subscriptionOnDragEnter = html.window.onDragEnter.listen((event) {
       event.preventDefault();
 
-      if (event.dataTransfer.types.validateFilesTransfer) {
+      if (browser.dragEventFileTypes(event).validateFilesTransfer) {
         draggableAppState.value = DraggableAppState.active;
       }
     });
@@ -235,7 +236,7 @@ class IdentityCreatorController extends BaseController with DragDropFileMixin im
     _subscriptionOnDragOver = html.window.onDragOver.listen((event) {
       event.preventDefault();
 
-      if (event.dataTransfer.types.validateFilesTransfer) {
+      if (browser.dragEventFileTypes(event).validateFilesTransfer) {
         draggableAppState.value = DraggableAppState.active;
       }
     });
@@ -243,7 +244,7 @@ class IdentityCreatorController extends BaseController with DragDropFileMixin im
     _subscriptionOnDragLeave = html.window.onDragLeave.listen((event) {
       event.preventDefault();
 
-      if (event.dataTransfer.types.validateFilesTransfer) {
+      if (browser.dragEventFileTypes(event).validateFilesTransfer) {
         draggableAppState.value = DraggableAppState.inActive;
       }
     });
@@ -251,7 +252,7 @@ class IdentityCreatorController extends BaseController with DragDropFileMixin im
     _subscriptionOnDrop = html.window.onDrop.listen((event) {
       event.preventDefault();
 
-      if (event.dataTransfer.types.validateFilesTransfer) {
+      if (browser.dragEventFileTypes(event).validateFilesTransfer) {
         draggableAppState.value = DraggableAppState.inActive;
       }
     });

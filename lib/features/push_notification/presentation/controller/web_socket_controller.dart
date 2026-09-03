@@ -15,7 +15,7 @@ import 'package:jmap_dart_client/jmap/core/session/session.dart';
 import 'package:jmap_dart_client/jmap/push/state_change.dart';
 import 'package:model/extensions/account_id_extensions.dart';
 import 'package:tmail_ui_user/features/network_connection/presentation/network_connection_controller.dart'
-  if (dart.library.html) 'package:tmail_ui_user/features/network_connection/presentation/web_network_connection_controller.dart';
+  if (dart.library.js_interop) 'package:tmail_ui_user/features/network_connection/presentation/web_network_connection_controller.dart';
 import 'package:tmail_ui_user/features/push_notification/data/model/web_socket_echo_request.dart';
 import 'package:tmail_ui_user/features/push_notification/data/model/web_socket_push_enable_request.dart';
 import 'package:tmail_ui_user/features/push_notification/domain/state/web_socket_push_state.dart';
@@ -39,7 +39,7 @@ class WebSocketController extends PushBaseController {
 
   ConnectWebSocketInteractor? _connectWebSocketInteractor;
   NetworkConnectionController? _networkConnectionController;
-  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   static final List<TypeName> _mailTypePushSupported = [
     TypeName.emailType,
@@ -279,8 +279,8 @@ class WebSocketController extends PushBaseController {
     _networkConnectionController = getBinding<NetworkConnectionController>();
     _connectivitySubscription = _networkConnectionController
       ?.connectivity
-      .onConnectivityChanged.listen((status) {
-        if (status == ConnectivityResult.none) {
+      .onConnectivityChanged.listen((statuses) {
+        if (statuses.every((status) => status == ConnectivityResult.none)) {
           log('WebSocketController::_monitorNetwork:No network connection');
           _cleanUpWebSocketResources();
         } else {

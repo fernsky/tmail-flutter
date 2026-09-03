@@ -1,34 +1,39 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
-import 'package:universal_html/html.dart' as html;
-
-typedef OnWebWindowListener = void Function(html.Event);
+import 'package:web/web.dart' as web;
 
 /// Mixin for [State] subclasses that need to listen to `window.onmessage`
-/// events. Guards for [html.MessageEvent] and String data before forwarding.
+/// events. Guards for a String or Map [web.MessageEvent.data] before
+/// forwarding.
+///
+/// Only ever imported by drive_intent_web_view_modal_web.dart, which is
+/// itself reached solely through a `dart.library.js_interop` conditional import
+/// -- i.e. compiled for a web target only (dart2js or dart2wasm alike), so
+/// this can use package:web directly rather than needing its own
+/// io/web stub split.
 mixin WebWindowMessageMixin<T extends StatefulWidget> on State<T> {
-  OnWebWindowListener? _windowListener;
+  StreamSubscription<web.MessageEvent>? _windowSubscription;
 
   void startWindowMessageListener(
     void Function(String data, String? origin) onMessage,
   ) {
-    _windowListener = (html.Event event) {
-      if (event is! html.MessageEvent) return;
-      dynamic data = event.data;
+    _windowSubscription = web.EventStreamProviders.messageEvent
+        .forTarget(web.window)
+        .listen((event) {
+      dynamic data = event.data.dartify();
       if (data is Map) {
         data = jsonEncode(data);
       }
       if (data is! String) return;
       onMessage(data, event.origin);
-    };
-    html.window.addEventListener('message', _windowListener!);
+    });
   }
 
   void stopWindowMessageListener() {
-    if (_windowListener != null) {
-      html.window.removeEventListener('message', _windowListener!);
-      _windowListener = null;
-    }
+    _windowSubscription?.cancel();
+    _windowSubscription = null;
   }
 }

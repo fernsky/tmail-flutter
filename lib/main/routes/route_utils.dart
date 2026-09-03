@@ -16,7 +16,7 @@ import 'package:tmail_ui_user/features/manage_account/presentation/model/account
 import 'package:tmail_ui_user/features/thread/domain/model/search_query.dart';
 import 'package:tmail_ui_user/main/routes/app_routes.dart';
 import 'package:tmail_ui_user/main/routes/navigation_router.dart';
-import 'package:universal_html/html.dart' as html;
+import 'package:core/utils/web/browser_actions_stub.dart' as browser;
 
 abstract class RouteUtils {
 
@@ -217,7 +217,7 @@ abstract class RouteUtils {
 
   static void replaceBrowserHistory({required String title, required Uri url}) {
     log('RouteUtils::replaceBrowserHistory(): title: $title | url: $url');
-    html.window.history.replaceState(null, title, url.toString());
+    browser.historyReplaceState(title, url.toString());
   }
 
   static Map<String, dynamic> parseMapMailtoFromUri(String? mailtoUri) {
@@ -309,7 +309,7 @@ abstract class RouteUtils {
   }
 
   static String? getRootDomain({String? hostname}) {
-    final host = hostname ?? html.window.location.hostname;
+    final host = hostname ?? browser.locationHostname;
 
     if (host == null || host.isEmpty) {
       return null;

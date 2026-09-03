@@ -2,7 +2,13 @@ import 'package:core/presentation/extensions/color_extension.dart';
 import 'package:core/presentation/views/quick_search/quick_search_action_define.dart';
 import 'package:core/utils/direction_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+// SuggestionsCallback/SuggestionSelectionCallback hidden: this file uses the
+// app's own typedefs from quick_search_action_define.dart (identical shape,
+// predates this package exporting names of its own), and newer
+// flutter_typeahead now exports both under the same names, which is
+// ambiguous without hiding one side.
+import 'package:flutter_typeahead/flutter_typeahead.dart'
+    hide SuggestionsCallback, SuggestionSelectionCallback;
 import 'package:linagora_design_flutter/linagora_design_flutter.dart'
     show RightClickFocus;
 

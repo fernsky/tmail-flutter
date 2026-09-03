@@ -34,7 +34,7 @@ class LabelDropDownButton extends StatelessWidget {
         child: DropdownButton2<Label?>(
           key: const ValueKey(UiKeys.advancedSearchLabelDropDown),
           isExpanded: true,
-          value: labelSelected,
+          valueListenable: ValueNotifier<Label?>(labelSelected),
           items: _buildItems(localizations),
           customButton: _LabelDropdownButtonView(
             imagePaths: imagePaths,
@@ -49,9 +49,10 @@ class LabelDropDownButton extends StatelessWidget {
     );
   }
 
-  List<DropdownMenuItem<Label?>> _buildItems(AppLocalizations localizations) {
-    final allLabelsItem = DropdownMenuItem<Label?>(
+  List<DropdownItem<Label?>> _buildItems(AppLocalizations localizations) {
+    final allLabelsItem = DropdownItem<Label?>(
       value: null,
+      height: LabelDropDownStyle.height,
       enabled: labelSelected != null,
       child: _LabelDropdownMenuItem(
         displayName: localizations.allLabels,
@@ -62,8 +63,9 @@ class LabelDropDownButton extends StatelessWidget {
 
     final labelItems = labels.map((label) {
       final isSelected = labelSelected?.id == label.id;
-      return DropdownMenuItem<Label?>(
+      return DropdownItem<Label?>(
         value: label,
+        height: LabelDropDownStyle.height,
         enabled: !isSelected,
         child: _LabelDropdownMenuItem(
           displayName: label.safeDisplayName,

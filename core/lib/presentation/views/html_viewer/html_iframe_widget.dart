@@ -1,5 +1,7 @@
+import 'dart:js_interop';
+
 import 'package:flutter/widgets.dart';
-import 'package:universal_html/html.dart';
+import 'package:web/web.dart' as web;
 
 class HtmlIframeWidget extends StatelessWidget {
   const HtmlIframeWidget({
@@ -12,7 +14,7 @@ class HtmlIframeWidget extends StatelessWidget {
     this.srcdoc,
   });
 
-  final void Function(IFrameElement iframe)? onIframeCreated;
+  final void Function(web.HTMLIFrameElement iframe)? onIframeCreated;
   final String? width, height, src, srcdoc;
   final double? borderRadius;
 
@@ -22,24 +24,28 @@ class HtmlIframeWidget extends StatelessWidget {
       key: key,
       tagName: 'iframe',
       onElementCreated: (element) {
-        final iframe = element as IFrameElement;
+        final iframe = element as web.HTMLIFrameElement;
         onIframeCreated?.call(iframe);
-        iframe
-          ..width = width
-          ..height = height
-          ..style.border = 'none'
-          ..style.overflow = 'hidden'
-          ..style.width = '100%'
-          ..style.height = '100%';
+        // width/height are legacy presentational attributes, not typed
+        // properties on HTMLIFrameElement (package:web only exposes what
+        // the modern IDL defines), hence setAttribute rather than a
+        // property setter.
+        if (width != null) iframe.setAttribute('width', width!);
+        if (height != null) iframe.setAttribute('height', height!);
+        iframe.style
+          ..border = 'none'
+          ..overflow = 'hidden'
+          ..width = '100%'
+          ..height = '100%';
 
         if (borderRadius != null) {
           iframe.style.borderRadius = '${borderRadius}px';
         }
 
         if (src != null) {
-          iframe.src = src;
+          iframe.src = src!;
         } else if (srcdoc != null) {
-          iframe.srcdoc = srcdoc;
+          iframe.srcdoc = srcdoc!.toJS;
         }
       },
     );

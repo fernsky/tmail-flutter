@@ -58,9 +58,13 @@ class FromComposerDropDownWidgetStyle {
       thumbVisibility: WidgetStateProperty.all<bool>(true),
     )
   );
+  static const double menuItemHeight = 72;
+
+  // height moved to each DropdownItem (see menuItemHeight above):
+  // dropdown_button2 3.x dropped MenuItemStyleData.height in favour of a
+  // per-item height.
   static MenuItemStyleData menuIemStyleData = MenuItemStyleData(
     padding: const EdgeInsets.symmetric(horizontal: 12),
-    height: 72,
     overlayColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) => Colors.white)
   );
   static TextStyle avatarTextStyle = ThemeUtils.defaultTextStyleInterFont.copyWith(

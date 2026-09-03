@@ -8,12 +8,12 @@ import 'package:core/data/network/download/downloaded_response.dart';
 import 'package:core/domain/exceptions/download_file_exception.dart';
 import 'package:core/utils/app_logger.dart';
 import 'package:core/utils/html/html_utils.dart';
+import 'package:core/utils/web/browser_actions_stub.dart' as browser;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
-import 'package:universal_html/html.dart' as html;
 
 class DownloadManager {
   final DownloadClient _downloadClient;
@@ -93,18 +93,7 @@ class DownloadManager {
   ) {
     try {
       final mimeType = _detectMimeType(filename, headerBytes: bytes);
-      final blob = html.Blob([bytes], mimeType);
-      final url = html.Url.createObjectUrlFromBlob(blob);
-      final anchor = html.document.createElement('a') as html.AnchorElement
-        ..href = url
-        ..style.display = 'none'
-        ..download = filename;
-      html.document.body?.children.add(anchor);
-
-      anchor.click();
-
-      html.document.body?.children.remove(anchor);
-      html.Url.revokeObjectUrl(url);
+      browser.downloadBytesAsFile(bytes, filename, mimeType);
     } catch (exception) {
       log('DownloadManager::createAnchorElementDownloadFileWeb(): ERROR: $exception');
       rethrow;

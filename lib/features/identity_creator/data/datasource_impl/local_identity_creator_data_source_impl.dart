@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:core/domain/exceptions/web_session_exception.dart';
+import 'package:core/utils/web/key_value_storage_stub.dart';
 import 'package:jmap_dart_client/jmap/account_id.dart';
 import 'package:jmap_dart_client/jmap/core/user_name.dart';
 import 'package:model/extensions/account_id_extensions.dart';
@@ -10,12 +10,12 @@ import 'package:tmail_ui_user/features/identity_creator/data/datasource/identity
 import 'package:tmail_ui_user/features/identity_creator/data/model/identity_cache_model.dart';
 import 'package:tmail_ui_user/features/identity_creator/domain/model/identity_cache.dart';
 import 'package:tmail_ui_user/main/exceptions/thrower/exception_thrower.dart';
-import 'package:universal_html/html.dart';
 
 class LocalIdentityCreatorDataSourceImpl implements IdentityCreatorDataSource {
   LocalIdentityCreatorDataSourceImpl(this._exceptionThrower);
 
   final ExceptionThrower _exceptionThrower;
+  final WebKeyValueStorage _sessionStorage = WebKeyValueStorage.session();
 
   static const sessionStorageKeyword = 'identityCreatorSessionStorage';
 
@@ -27,13 +27,13 @@ class LocalIdentityCreatorDataSourceImpl implements IdentityCreatorDataSource {
   ) async {
     return Future.sync(() {
       final cacheKey = _generateTupleKey(accountId, userName);
-      Map<String, String> entries = {
-        cacheKey: jsonEncode(IdentityCacheModel.fromDomain(identityCache).toJson())
-      };
-      window.sessionStorage.addAll(entries);
+      _sessionStorage.setItem(
+        cacheKey,
+        jsonEncode(IdentityCacheModel.fromDomain(identityCache).toJson()),
+      );
     }).catchError(_exceptionThrower.throwException);
   }
-    
+
   @override
   Future<IdentityCache> getIdentityCacheOnWeb(
     AccountId accountId,
@@ -41,10 +41,9 @@ class LocalIdentityCreatorDataSourceImpl implements IdentityCreatorDataSource {
   ) async {
     return Future.sync(() {
       final cacheKey = _generateTupleKey(accountId, userName);
-      final result = window.sessionStorage.entries.firstWhereOrNull(
-        (entry) => entry.key == cacheKey);
+      final result = _sessionStorage.getItem(cacheKey);
       if (result != null) {
-        return IdentityCacheModel.fromJson(jsonDecode(result.value));
+        return IdentityCacheModel.fromJson(jsonDecode(result));
       } else {
         throw const NotFoundInWebSessionException();
       }
@@ -54,8 +53,13 @@ class LocalIdentityCreatorDataSourceImpl implements IdentityCreatorDataSource {
   @override
   Future<void> removeIdentityCacheOnWeb() async {
     return Future.sync(() {
-      window.sessionStorage.removeWhere(
-        (key, value) => key.startsWith(LocalIdentityCreatorDataSourceImpl.sessionStorageKeyword));
+      final keysToRemove = _sessionStorage.entries
+        .where((entry) => entry.key.startsWith(LocalIdentityCreatorDataSourceImpl.sessionStorageKeyword))
+        .map((entry) => entry.key)
+        .toList();
+      for (final key in keysToRemove) {
+        _sessionStorage.removeItem(key);
+      }
     }).catchError(_exceptionThrower.throwException);
   }
 

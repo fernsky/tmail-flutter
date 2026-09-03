@@ -17,7 +17,7 @@ typedef OnChangeIdentity = void Function(Identity? identity);
 class FromComposerDropDownWidget extends StatelessWidget {
 
   final List<Identity> items;
-  final GlobalKey<DropdownButton2State>? dropdownKey;
+  final GlobalKey<State<DropdownButton2<dynamic>>>? dropdownKey;
   final Identity? itemSelected;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
@@ -66,8 +66,9 @@ class FromComposerDropDownWidget extends StatelessWidget {
                 child: DropdownButton2<Identity>(
                   key: dropdownKey,
                   isExpanded: false,
-                  items: items.map((item) => DropdownMenuItem<Identity>(
+                  items: items.map((item) => DropdownItem<Identity>(
                     value: item,
+                    height: FromComposerDropDownWidgetStyle.menuItemHeight,
                     child: PointerInterceptor(
                       child: Container(
                         color: Colors.transparent,
@@ -123,17 +124,17 @@ class FromComposerDropDownWidget extends StatelessWidget {
                       ),
                     ),
                   )).toList(),
-                  value: itemSelected,
+                  valueListenable: ValueNotifier<Identity?>(itemSelected),
                   buttonStyleData: FromComposerDropDownWidgetStyle.buttonStyleData,
                   dropdownSearchData: DropdownSearchData(
-                    searchInnerWidget: Container(
+                    searchBarWidget: Container(
                       padding: FromComposerDropDownWidgetStyle.dropdownTopBarPadding,
                       child: Text(
                         AppLocalizations.of(context).yourIdentities,
                         style: FromComposerDropDownWidgetStyle.dropdownTitleTextStyle,
                       ),
                     ),
-                    searchInnerWidgetHeight: FromComposerDropDownWidgetStyle.dropdownTopBarHeight,
+                    searchBarWidgetHeight: FromComposerDropDownWidgetStyle.dropdownTopBarHeight,
                   ),
                   dropdownStyleData: FromComposerDropDownWidgetStyle.dropdownStyleData,
                   iconStyleData: IconStyleData(

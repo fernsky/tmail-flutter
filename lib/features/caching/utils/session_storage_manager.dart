@@ -1,23 +1,19 @@
-
-import 'package:collection/collection.dart';
+import 'package:core/utils/web/key_value_storage_stub.dart';
 import 'package:tmail_ui_user/features/caching/exceptions/local_storage_exception.dart';
-import 'package:universal_html/html.dart' as html;
 
 class SessionStorageManager {
 
-  final html.Storage sessionStorage = html.window.sessionStorage;
+  final WebKeyValueStorage sessionStorage = WebKeyValueStorage.session();
 
   void save(String key, String value) {
-    sessionStorage.addAll({key: value});
+    sessionStorage.setItem(key, value);
   }
 
   String get(String key) {
-    final entry = sessionStorage
-      .entries
-      .firstWhereOrNull((entry) => entry.key == key);
+    final value = sessionStorage.getItem(key);
 
-    if (entry != null) {
-      return entry.value;
+    if (value != null) {
+      return value;
     } else {
       throw const NotFoundDataWithThisKeyException();
     }
@@ -25,7 +21,7 @@ class SessionStorageManager {
 
   void remove(String key) {
     if (sessionStorage.containsKey(key)) {
-      sessionStorage.remove(key);
+      sessionStorage.removeItem(key);
     }
   }
 }

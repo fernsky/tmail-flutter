@@ -21,7 +21,7 @@ class NetworkConnectionController extends GetxController {
 
   bool _isEnableShowToastDisconnection = true;
 
-  StreamSubscription<ConnectivityResult>? _subscription;
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
 
   NetworkConnectionController(this._connectivity);
 
@@ -65,8 +65,10 @@ class NetworkConnectionController extends GetxController {
     );
   }
 
-  void _setNetworkConnectivityState(ConnectivityResult newConnectivityResult) {
-    _connectivityResult.value = newConnectivityResult;
+  void _setNetworkConnectivityState(List<ConnectivityResult> newConnectivityResult) {
+    _connectivityResult.value = newConnectivityResult.isNotEmpty
+      ? newConnectivityResult.first
+      : ConnectivityResult.none;
   }
 
   bool isNetworkConnectionAvailable() => _connectivityResult.value != ConnectivityResult.none;
