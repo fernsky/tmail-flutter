@@ -136,14 +136,22 @@
             config: tmailFlutterConfig,
             onEntrypointLoaded: async function(engineInitializer) {
               const appRunner = await engineInitializer.initializeEngine({
-                fontFallbackBaseUrl: '',
+                // fontFallbackBaseUrl is deliberately NOT set to ''.
+                //
+                // Empty pointed Flutter's automatic Noto fallback at our
+                // own origin, which only worked because every fallback
+                // font was bundled — and bundling them meant CanvasKit
+                // downloaded all 21MB before painting a single frame. The
+                // heavy scripts are no longer bundled (see pubspec.yaml),
+                // so the default source is what makes CJK, emoji and maths
+                // still render: fetched on demand, only for glyphs that
+                // actually appear.
+                //
                 // assetBase has to be given to the *engine*, not only to
-                // loader.load() above. The loader's copy governs its own
+                // loader.load() above. That config governs the loader's own
                 // fetches (main.dart.js, canvaskit); the engine resolves
-                // everything under assets/ separately and, without this,
-                // pulls it from the origin — which meant ~20MB of bundled
-                // fallback fonts (NotoSansSC alone is 10MB) coming off the
-                // origin one by one instead of the CDN edge.
+                // everything under assets/ separately and without this
+                // pulls it from the origin instead of the CDN edge.
                 ...(tmailFlutterConfig.assetBase
                   ? { assetBase: tmailFlutterConfig.assetBase }
                   : {})
@@ -156,8 +164,14 @@
       _flutter.loader.load({
         config: tmailFlutterConfig,
         onEntrypointLoaded: async function(engineInitializer) {
+          // Same two decisions as the branch above: no
+          // fontFallbackBaseUrl override (so heavy scripts load on demand
+          // from Flutter's default source rather than being bundled), and
+          // assetBase passed to the engine so assets come from the CDN.
           const appRunner = await engineInitializer.initializeEngine({
-            fontFallbackBaseUrl: ''
+            ...(tmailFlutterConfig.assetBase
+              ? { assetBase: tmailFlutterConfig.assetBase }
+              : {})
           });
           await appRunner.runApp();
         }
