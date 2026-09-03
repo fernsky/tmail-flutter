@@ -518,11 +518,12 @@ packages:
   enough_platform_widgets:
     dependency: "direct overridden"
     description:
-      name: enough_platform_widgets
-      sha256: c8cf37e73a412cc7ea2041381fcf56b69e3d58c31ad33af19df7671c3b49286e
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
+      path: "."
+      ref: main
+      resolved-ref: "38f080f758da42dd9e66d49adbba02aa28d9ff7c"
+      url: "https://github.com/Enough-Software/enough_platform_widgets.git"
+    source: git
+    version: "1.1.2"
   equatable:
     dependency: "direct main"
     description:
@@ -1027,10 +1028,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_platform_widgets
-      sha256: "84f39540cf433aa44b235b7fca6518d1bd30aa281d8196f00be60bc76cac96f4"
+      sha256: aa110ef638076831d060047911a62810d02b4695db58e7682b716c4c4eee65bc
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "10.0.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

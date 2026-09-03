@@ -364,9 +364,15 @@ dependency_overrides:
   # firebase_core_platform_interface ^8.1.0 still admits the 8.1.1 that
   # firebase_messaging 16.6.0 requires -- going back further breaks that.
   firebase_core_web: 3.10.0
-  # enough_platform_widgets 1.1.2 passes a `bool?` where Flutter 3.41.7
-  # wants a `bool` (its icon-button wrappers).
-  enough_platform_widgets: 1.1.1
+  # Every *published* version of enough_platform_widgets passes a `bool?`
+  # into a `bool autofocus` in its icon-button wrappers, so no pin fixes
+  # it -- 1.1.2 and 1.1.1 fail identically. Upstream master already carries
+  # the one-line fix (`autofocus: autofocus ?? false`) and has simply never
+  # been released to pub, so the git ref is the only working source.
+  enough_platform_widgets:
+    git:
+      url: https://github.com/Enough-Software/enough_platform_widgets.git
+      ref: main
 
   # jmap_dart_client incorrectly declares build_runner and json_serializable
   # as regular dependencies. Override here so the workspace can resolve.
