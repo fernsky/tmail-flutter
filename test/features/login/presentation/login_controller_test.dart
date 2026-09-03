@@ -192,7 +192,7 @@ void main() {
     Get.put<TwakeAppManager>(mockTwakeAppManager);
     Get.testMode = true;
 
-    dotenv.testLoad(mergeWith: {
+    dotenv.loadFromString(isOptional: true, mergeWith: {
       'SERVER_URL': 'https://example.com'
     });
 

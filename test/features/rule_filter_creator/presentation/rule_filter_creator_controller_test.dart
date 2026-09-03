@@ -49,7 +49,9 @@ import 'package:tmail_ui_user/features/rules_filter_creator/presentation/widgets
 import 'package:tmail_ui_user/main/bindings/network/binding_tag.dart';
 import 'package:tmail_ui_user/main/utils/toast_manager.dart';
 import 'package:tmail_ui_user/main/utils/twake_app_manager.dart';
-import 'package:uuid/uuid.dart';
+// Namespace hidden: uuid 4.x exports its own Namespace enum, which collides
+// with jmap_dart_client's Namespace class used below.
+import 'package:uuid/uuid.dart' hide Namespace;
 
 import '../../../fixtures/widget_fixtures.dart';
 import 'rule_filter_creator_controller_test.mocks.dart';

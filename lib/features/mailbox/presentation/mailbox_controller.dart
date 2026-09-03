@@ -181,7 +181,15 @@ class MailboxController extends BaseMailboxController
   void onReady() {
     _openMailboxEventStreamSubscription = _openMailboxEventController
       .stream
-      .debounceTime(const Duration(milliseconds: 500))
+      // throttle, not debounce. Both collapse a double-click into one open
+      // (TF-1698: rapid repeat clicks redirecting to the wrong URL), but
+      // debounceTime waits for the stream to go quiet before emitting at
+      // all -- so every single deliberate click, the overwhelming majority
+      // of them, paid a flat 500ms before the mailbox even began loading.
+      // throttleTime with leading: true opens the first click immediately
+      // and drops the repeats inside the window, which is what TF-1698
+      // actually needed.
+      .throttleTime(const Duration(milliseconds: 500))
       .listen((event) {
         if (!event.buildContext.mounted) return;
         _handleOpenMailbox(event.buildContext, event.presentationMailbox);
