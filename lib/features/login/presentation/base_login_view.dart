@@ -1,5 +1,6 @@
 import 'package:core/presentation/extensions/color_extension.dart';
 import 'package:core/presentation/utils/theme_utils.dart';
+import 'package:core/presentation/views/login/wave_hero_widget.dart';
 import 'package:core/presentation/views/text/type_ahead_form_field_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,9 +16,9 @@ abstract class BaseLoginView extends GetWidget<LoginController> {
 
   Widget buildLoginButton(BuildContext context) {
     return Container(
-      margin: const EdgeInsetsDirectional.only(bottom: 16, start: 24, end: 24),
-      width: controller.responsiveUtils.getDeviceWidth(context),
-      height: 48,
+      margin: const EdgeInsetsDirectional.only(top: 16),
+      width: double.infinity,
+      height: authButtonHeight,
       child: ElevatedButton(
         key: const Key('loginSubmitForm'),
         style: ElevatedButton.styleFrom(
@@ -46,18 +47,15 @@ abstract class BaseLoginView extends GetWidget<LoginController> {
   Widget buildInputCredentialForm(BuildContext context) {
     return AutofillGroup(
       key: const Key('credential_input_form'),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 24),
-        child: FocusTraversalGroup(
-          policy: WidgetOrderTraversalPolicy(),
-          child: Column(
-            children: [
-              buildUserNameInput(context),
-              const SizedBox(height: 24),
-              buildPasswordInput(context),
-              const SizedBox(height: 40),
-            ],
-          ),
+      child: FocusTraversalGroup(
+        policy: WidgetOrderTraversalPolicy(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            buildUserNameInput(context),
+            const SizedBox(height: 16),
+            buildPasswordInput(context),
+          ],
         ),
       ),
     );
@@ -73,14 +71,8 @@ abstract class BaseLoginView extends GetWidget<LoginController> {
       autocorrect: false,
       autofillHints: const [AutofillHints.email],
       keyboardType: TextInputType.emailAddress,
-      textStyle: ThemeUtils.defaultTextStyleInterFont.copyWith(
-        color: AppColor.textFieldTextColor,
-        fontSize: 17,
-        fontWeight: FontWeight.normal,
-      ),
       decoration: (LoginInputDecorationBuilder()
-        ..setLabelText(AppLocalizations.of(context).email)
-        ..setHintText(AppLocalizations.of(context).email))
+        ..setLabelText(AppLocalizations.of(context).email))
         .build(),
       debounceDuration: const Duration(milliseconds: 300),
       suggestionsCallback: (query) =>

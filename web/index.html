@@ -54,7 +54,22 @@
          our own loading mark; the Workplace logo has no counterpart here and
          is simply gone, rather than swapped for something that would imply a
          product we do not ship. -->
-    <img class="center" src="splash/img/loading-logo.png" alt="Bodhimail" style="width: 176px; height: 176px; object-fit: contain;">
+    <div id="app-loading">
+      <img src="splash/img/loading-logo.png" alt="Bodhimail">
+    </div>
+
+    <script>
+      // The engine dispatches this once its first frame is painted, regardless
+      // of bootstrap mode -- fade the loading state out then remove it, so
+      // Flutter's own UI takes over cleanly underneath. Without this the
+      // loading mark was never taken out of the document at all.
+      window.addEventListener('flutter-first-frame', function () {
+        var el = document.getElementById('app-loading');
+        if (!el) return;
+        el.style.opacity = '0';
+        setTimeout(function () { el.remove(); }, 200);
+      });
+    </script>
 
     <div class="smart-banner">
         <button class="button close" onClick="closeSmartBanner()">
@@ -105,9 +120,7 @@
               const appRunner = await engineInitializer.initializeEngine({
                 fontFallbackBaseUrl: ''
               });
-              await setTimeout( async function () {
-                await appRunner.runApp();
-              }, 2000);
+              await appRunner.runApp();
             }
           });
         });
@@ -117,9 +130,7 @@
           const appRunner = await engineInitializer.initializeEngine({
             fontFallbackBaseUrl: ''
           });
-          await setTimeout( async function () {
-            await appRunner.runApp();
-          }, 2000);
+          await appRunner.runApp();
         }
       });
     }

@@ -4,7 +4,6 @@ import 'package:core/presentation/utils/theme_utils.dart';
 import 'package:core/presentation/views/text/type_ahead_form_field_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tmail_ui_user/features/base/widget/application_version_widget.dart';
 import 'package:tmail_ui_user/features/base/widget/recent_item_tile_widget.dart';
 import 'package:tmail_ui_user/features/login/domain/model/recent_login_url.dart';
 import 'package:tmail_ui_user/features/login/presentation/base_login_view.dart';
@@ -128,7 +127,6 @@ class LoginView extends BaseLoginView {
               padding: EdgeInsets.only(top: 16),
               child: PrivacyLinkWidget(),
             ),
-            const ApplicationVersionWidget(padding: EdgeInsets.only(top: 8)),
           ]
         ),
       )
@@ -179,13 +177,19 @@ class LoginView extends BaseLoginView {
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: AppColor.primaryColor,
+          elevation: 0,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
             side: const BorderSide(width: 0, color: AppColor.primaryColor)
           )
         ),
         child: Text(AppLocalizations.of(context).next,
-          style: ThemeUtils.defaultTextStyleInterFont.copyWith(fontSize: 16, color: Colors.white)
+          style: ThemeUtils.defaultTextStyleInterFont.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          )
         ),
         onPressed: () {
           if (controller.loginFormType.value == LoginFormType.retry) {

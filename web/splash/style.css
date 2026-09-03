@@ -18,6 +18,35 @@ body {
   transform: translate(-50%, -50%);
 }
 
+/* Minimal branded loading state, shown immediately (before Flutter's JS even
+   downloads) and removed once the engine paints its first frame -- see the
+   'flutter-first-frame' listener in index.html. Deliberately just a centered,
+   gently pulsing mark, no spinner: the previous markup left a bare <img> in
+   the document that nothing ever removed, so it stayed behind Flutter's
+   canvas for the whole session instead of handing off to the app. */
+#app-loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  transition: opacity 200ms ease-out;
+  z-index: 9999;
+}
+
+#app-loading img {
+  width: 176px;
+  height: 176px;
+  object-fit: contain;
+  animation: app-loading-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes app-loading-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
 .contain {
   display:block;
   width:100%; height:100%;

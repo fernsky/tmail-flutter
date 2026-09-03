@@ -1,6 +1,4 @@
-import 'package:core/presentation/extensions/color_extension.dart';
 import 'package:core/presentation/resources/image_paths.dart';
-import 'package:core/presentation/utils/theme_utils.dart';
 import 'package:core/presentation/views/button/tmail_button_widget.dart';
 import 'package:core/presentation/views/text/text_form_field_builder.dart';
 import 'package:flutter/material.dart';
@@ -69,56 +67,18 @@ class _LoginTextInputBuilderState extends State<LoginTextInputBuilder> {
           textInputAction: widget.textInputAction,
           autofillHints: widget.autofillHints,
           controller: _controller,
-          textStyle: ThemeUtils.defaultTextStyleInterFont.copyWith(
-            color: AppColor.loginTextFieldHintColor,
-            fontSize: 17,
-            fontWeight: FontWeight.normal
-          ),
           focusNode: widget.focusNode,
+          // Stock M3 decoration, as on bodhimail's PasswordFormField: only
+          // the label/hint is specified and the seeded theme supplies the
+          // rest, so this field matches the email field above it exactly.
           decoration: (LoginInputDecorationBuilder()
-            ..setHintText(widget.hintText)
+            ..setLabelText(widget.hintText)
             ..setPrefixText(widget.prefixText)
             ..setContentPadding(const EdgeInsetsDirectional.only(
-                start: 25,
+                start: 16,
                 top: 18,
                 bottom: 18,
                 end: 40
-            ))
-            ..setHintStyle(ThemeUtils.defaultTextStyleInterFont.copyWith(
-                color: AppColor.loginTextFieldHintColor,
-                fontSize: 17,
-                fontWeight: FontWeight.normal
-            ))
-            ..setPrefixStyle(ThemeUtils.defaultTextStyleInterFont.copyWith(
-                color: AppColor.loginTextFieldHintColor,
-                fontSize: 17,
-                fontWeight: FontWeight.normal
-            ))
-            ..setErrorTextStyle(ThemeUtils.defaultTextStyleInterFont.copyWith(
-                color: AppColor.loginTextFieldErrorBorder,
-                fontSize: 13,
-                fontWeight: FontWeight.normal
-            ))
-            ..setFocusBorder(OutlineInputBorder(
-                borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
-                borderSide: const BorderSide(
-                  width: 2,
-                  color: AppColor.loginTextFieldFocusedBorder
-                )
-            ))
-            ..setEnabledBorder(OutlineInputBorder(
-                borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
-                borderSide: const BorderSide(
-                  width: 1,
-                  color: AppColor.loginTextFieldBorderColor
-                )
-            ))
-            ..setErrorBorder(OutlineInputBorder(
-                borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
-                borderSide: const BorderSide(
-                  width: 1,
-                  color: AppColor.loginTextFieldErrorBorder
-                )
             ))
           ).build(),
         ),

@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jmap_dart_client/jmap/quotas/quota.dart';
 import 'package:linagora_design_flutter/linagora_design_flutter.dart';
-import 'package:tmail_ui_user/features/base/widget/application_version_widget.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/controller/mailbox_dashboard_controller.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/extensions/validate_premium_storage_extension.dart';
 import 'package:tmail_ui_user/features/quotas/domain/extensions/quota_extensions.dart';
@@ -45,10 +44,6 @@ class MailboxSidebarFooter extends GetWidget<QuotasController> {
               onPressed: () =>
                   dashboardController.paywallController?.navigateToPaywall(),
             ),
-          ApplicationVersionWidget(
-            title: '${AppLocalizations.of(context).version.toLowerCase()} ',
-            builder: (context, version) => LinagoraSidebarVersion(text: version),
-          ),
         ],
       );
     });

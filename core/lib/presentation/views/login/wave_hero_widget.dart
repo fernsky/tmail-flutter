@@ -31,6 +31,15 @@ class _WaveBottomClipper extends CustomClipper<Path> {
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
+/// The height every full-width action button on the auth screens uses, so
+/// they line up exactly. Also a comfortable touch target.
+const double authButtonHeight = 48;
+
+/// Maximum width of the auth screens' body content, so every control below
+/// the hero shares one width at any window size (and the form does not
+/// stretch across a wide desktop display).
+const double authContentMaxWidth = 400;
+
 /// Brand-green wave hero panel — a diagonal gradient with a few soft,
 /// oversized translucent circles — matching bodhimail's auth screens.
 class WaveHeroWidget extends StatelessWidget {
@@ -84,6 +93,79 @@ class WaveHeroWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Shared layout for the auth screens, mirroring bodhimail's
+/// `WaveHeroScaffold`: a brand-green wave hero panel up top and a white body
+/// below carrying a large [title] (not a conventional small AppBar title —
+/// this replaces the app bar entirely here), an optional [subtitle], and
+/// arbitrary [child] content, capped and centered at [authContentMaxWidth].
+class WaveHeroScaffold extends StatelessWidget {
+  const WaveHeroScaffold({
+    required this.title,
+    required this.child,
+    this.subtitle,
+    this.heroHeight = 260,
+    super.key,
+  });
+
+  final String title;
+  final String? subtitle;
+  final Widget child;
+  final double heroHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        WaveHeroWidget(height: heroHeight),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: authContentMaxWidth),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF1B1B1B),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 6, bottom: 4),
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColor.primaryColor,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      subtitle!,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFF6B6B6B),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 24),
+                  child,
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:tmail_ui_user/features/base/model/ui_keys.dart';
 import 'package:tmail_ui_user/features/base/widget/application_logo_with_text_widget.dart';
 import 'package:tmail_ui_user/features/base/widget/user_avatar_builder.dart';
-import 'package:tmail_ui_user/features/mailbox/presentation/widgets/app_grid/app_grid_icon.dart';
 import 'package:tmail_ui_user/features/mailbox/presentation/widgets/support/contact_support_icon.dart';
 
 typedef OnOpenSettingsAction = void Function();
@@ -43,12 +42,6 @@ class MailboxAppBar extends StatelessWidget {
             ContactSupportIcon(
               icon: imagePaths.icHelp,
               onTapAction: openContactSupportAction!,
-            ),
-          if (openAppGridAction != null)
-            AppGridIcon(
-              key: const ValueKey(UiKeys.toggleAppGridButton),
-              icon: imagePaths.icAppDashboard,
-              onTapAction: openAppGridAction!,
             ),
           UserAvatarBuilder(
             key: const ValueKey(UiKeys.userAvatar),

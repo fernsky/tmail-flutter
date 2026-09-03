@@ -9,6 +9,13 @@ class ThemeUtils {
 
   static ThemeData buildAppTheme(BuildContext context) {
     return ThemeData(
+      // Seeded from the brand green rather than left to Flutter's default
+      // palette. Without this every Material component that reads from the
+      // color scheme -- inputs above all -- rendered in the framework's
+      // stock washed-out lilac/grey instead of anything belonging to this
+      // product, which is what made the UI read as muted throughout.
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(seedColor: AppColor.primaryColor),
       scaffoldBackgroundColor: Colors.white,
       fontFamily: _designSystemFontFamily,
       fontFamilyFallback: ConstantsUI.fontFamilyFallback,
@@ -381,14 +388,25 @@ class ThemeUtils {
   /// (`../bodhimail/app/lib/core/theme/app_theme.dart`).
   static const double primitiveBorderRadius = 8;
 
+  /// Mirrors bodhimail's `ElevatedButtonThemeData`. M3's default
+  /// `ElevatedButton` is a pale surface-tinted button with primary-coloured
+  /// text; this restores the solid brand-green-with-white-text look as the
+  /// app-wide default, so it holds for every `ElevatedButton` rather than
+  /// being re-specified per screen. Disabled still reads as the same button,
+  /// just muted -- primary actions here are often disabled-until-valid, so
+  /// that state is on screen a lot.
   static final ElevatedButtonThemeData _elevatedButtonTheme = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
+      backgroundColor: AppColor.primaryColor,
+      foregroundColor: Colors.white,
+      disabledBackgroundColor: AppColor.primaryColor.withValues(alpha: 0.35),
+      disabledForegroundColor: Colors.white.withValues(alpha: 0.8),
       elevation: 0,
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(primitiveBorderRadius),
       ),
-      textStyle: const TextStyle(fontWeight: FontWeight.w600),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
     ),
   );
 

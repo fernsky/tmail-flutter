@@ -2,28 +2,33 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 
+/// Auth-screen input decoration, matching bodhimail's: stock Material 3.
+///
+/// bodhimail's auth fields are a plain `InputDecoration(labelText: ...)` and
+/// nothing else -- the seeded M3 theme supplies the fill, the border and the
+/// floating label, so a focused field picks up the brand green on its own.
+/// What used to be here instead was a pale `#F2F4F2` fill inside an equally
+/// pale outline, with `floatingLabelBehavior: never` pinning the label down
+/// as a low-contrast placeholder. That combination is what read as washed
+/// out: three near-white greys stacked on each other with nothing to
+/// anchor them.
+///
+/// Overrides still apply when a caller sets them ([enabledBorder],
+/// [labelStyle], ...), so callers that genuinely need a different field are
+/// unaffected; they simply are not the default any more.
 class LoginInputDecorationBuilder extends InputDecorationBuilder {
 
   @override
   InputDecoration build() {
     return InputDecoration(
-      enabledBorder: enabledBorder ?? OutlineInputBorder(
-        borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
-        borderSide: const BorderSide(width: 1, color: AppColor.textFieldBorderColor)),
-      focusedBorder:  focusBorder ?? OutlineInputBorder(
-        borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
-        borderSide: const BorderSide(width: 2, color: AppColor.textFieldFocusedBorderColor)),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(ThemeUtils.primitiveBorderRadius),
-        borderSide: const BorderSide(width: 1, color: AppColor.textFieldErrorBorderColor)),
+      enabledBorder: enabledBorder,
+      focusedBorder: focusBorder,
       prefixText: prefixText,
       labelText: labelText,
-      floatingLabelBehavior: FloatingLabelBehavior.never,
-      labelStyle: labelStyle ?? ThemeUtils.defaultTextStyleInterFont.copyWith(color: AppColor.textFieldLabelColor, fontSize: 17),
+      labelStyle: labelStyle,
       hintText: hintText,
-      hintStyle: hintStyle ?? ThemeUtils.defaultTextStyleInterFont.copyWith(color: AppColor.textFieldHintColor, fontSize: 17),
-      contentPadding: contentPadding ?? const EdgeInsetsDirectional.only(start: 25, top: 18, bottom: 18, end: 25),
-      filled: true,
-      fillColor: AppColor.textFieldBorderColor);
+      hintStyle: hintStyle,
+      contentPadding: contentPadding,
+    );
   }
 }
