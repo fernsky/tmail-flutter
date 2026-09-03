@@ -29,6 +29,7 @@ class LoginInputDecorationBuilder extends InputDecorationBuilder {
       hintText: hintText,
       hintStyle: hintStyle,
       contentPadding: contentPadding,
+      suffixIcon: suffixIcon,
     );
   }
 }

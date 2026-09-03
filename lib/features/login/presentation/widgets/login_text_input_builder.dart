@@ -1,12 +1,15 @@
-import 'package:core/presentation/resources/image_paths.dart';
-import 'package:core/presentation/views/button/tmail_button_widget.dart';
 import 'package:core/presentation/views/text/text_form_field_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:tmail_ui_user/features/login/presentation/widgets/login_input_decoration_builder.dart';
 
 typedef OnSubmitted = void Function(String);
 
+/// Password entry, shaped like bodhimail's `PasswordFormField`: obscured by
+/// default with a show/hide toggle carried as the decoration's own
+/// `suffixIcon`, rather than a separate button stacked on top of the field
+/// and paid for with reserved trailing padding. Putting it in the decoration
+/// is what lets the field size and align itself, and gives the toggle a
+/// focus/hit target the framework manages.
 class LoginTextInputBuilder extends StatefulWidget {
   final String? hintText;
   final String? prefixText;
@@ -39,8 +42,6 @@ class LoginTextInputBuilder extends StatefulWidget {
 
 class _LoginTextInputBuilderState extends State<LoginTextInputBuilder> {
 
-  final imagePaths = Get.find<ImagePaths>();
-
   late TextEditingController _controller;
   late bool _obscureText;
 
@@ -57,42 +58,34 @@ class _LoginTextInputBuilderState extends State<LoginTextInputBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: AlignmentDirectional.centerEnd,
-      children: [
-        TextFormFieldBuilder(
-          onTextSubmitted: widget.onSubmitted,
-          onTextChange: widget.onTextChange,
-          obscureText: _obscureText,
-          textInputAction: widget.textInputAction,
-          autofillHints: widget.autofillHints,
-          controller: _controller,
-          focusNode: widget.focusNode,
-          // Stock M3 decoration, as on bodhimail's PasswordFormField: only
-          // the label/hint is specified and the seeded theme supplies the
-          // rest, so this field matches the email field above it exactly.
-          decoration: (LoginInputDecorationBuilder()
-            ..setLabelText(widget.hintText)
-            ..setPrefixText(widget.prefixText)
-            ..setContentPadding(const EdgeInsetsDirectional.only(
-                start: 16,
-                top: 18,
-                bottom: 18,
-                end: 40
-            ))
-          ).build(),
-        ),
-        if (widget.passwordInput)
-          TMailButtonWidget.fromIcon(
-            icon: _obscureText ? imagePaths.icEye : imagePaths.icEyeOff,
-            iconSize: 18,
-            margin: const EdgeInsetsDirectional.only(end: 4),
-            backgroundColor: Colors.transparent,
-            onTapActionCallback: () {
-              setState(() => _obscureText = !_obscureText);
-            },
-          )
-      ]
+    return TextFormFieldBuilder(
+      onTextSubmitted: widget.onSubmitted,
+      onTextChange: widget.onTextChange,
+      obscureText: _obscureText,
+      textInputAction: widget.textInputAction,
+      autofillHints: widget.autofillHints,
+      controller: _controller,
+      focusNode: widget.focusNode,
+      // Stock M3 decoration, as on bodhimail's PasswordFormField: only the
+      // label is specified and the seeded theme supplies the rest, so this
+      // field matches the email field above it exactly.
+      decoration: (LoginInputDecorationBuilder()
+        ..setLabelText(widget.hintText)
+        ..setPrefixText(widget.prefixText)
+        ..setSuffixIcon(widget.passwordInput ? _buildObscureToggle() : null)
+      ).build(),
+    );
+  }
+
+  // Plain strings rather than localized keys, matching how the "Source code"
+  // link on this screen is handled: a new key means regenerating
+  // app_localizations.dart across all 17 catalogues. Worth revisiting if
+  // these ever need translating.
+  Widget _buildObscureToggle() {
+    return IconButton(
+      icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
+      tooltip: _obscureText ? 'Show password' : 'Hide password',
+      onPressed: () => setState(() => _obscureText = !_obscureText),
     );
   }
 

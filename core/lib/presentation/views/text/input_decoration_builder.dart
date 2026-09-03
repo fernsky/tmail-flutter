@@ -14,9 +14,14 @@ abstract class InputDecorationBuilder {
   String? errorText;
   TextStyle? errorTextStyle;
   Color? fillColor;
+  Widget? suffixIcon;
 
   void setFillColor(Color? newColor) {
     fillColor = newColor;
+  }
+
+  void setSuffixIcon(Widget? newSuffixIcon) {
+    suffixIcon = newSuffixIcon;
   }
 
   void setPrefixText(String? newPrefixText) {
@@ -80,6 +85,7 @@ abstract class InputDecorationBuilder {
       errorStyle: errorTextStyle,
       enabledBorder: enabledBorder,
       focusedBorder: focusBorder,
+      suffixIcon: suffixIcon,
     );
   }
 }
