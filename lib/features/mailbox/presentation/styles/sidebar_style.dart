@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:linagora_design_flutter/linagora_design_flutter.dart';
 
-/// The sidebar's proportions, set to read like bodhimail's navigation rather
-/// than the design system's default.
+/// The sidebar's proportions.
 ///
-/// That default is built for a dense rail: 36px rows, 8px of horizontal
-/// padding, 16px glyphs and a 14px label. Next to bodhimail's nav -- stock
-/// `ListTile` rows, so 16px padding and 24px glyphs, with a 15/w500 label --
-/// it reads as small type crowded into short rows, which is the complaint
-/// this answers.
-///
-/// Rows land at 48 rather than `ListTile`'s 56. A folder tree is not a
-/// five-item nav: 56 across a long, nested mailbox list pushes folders below
-/// the fold, and vertical space bought at that price stops being generous
-/// and starts being scrolling. 48 is the Material tap target, a third more
-/// room than before, and still fits the tree.
+/// The design system's own default is built for a dense rail: 36px rows,
+/// 8px of horizontal padding, 16px glyphs and a 14px label -- cramped next
+/// to bodhimail's stock `ListTile` rows (16px padding, 24px glyphs, 15/w500
+/// label). A first pass matched bodhimail's numbers directly, which turned
+/// out to overshoot the other way once it was actually on screen: 24px
+/// glyphs and a 15px label read as oversized for a folder list this dense
+/// (Inbox/Sent/Drafts/Trash sitting right above a nested tree of custom
+/// folders). These values split the difference -- roomier than the design
+/// system default, well short of bodhimail's own numbers, sized for a list
+/// of many short rows rather than a five-item nav.
 ///
 /// Built with the full constructor rather than `copyWith`, whose override
 /// classes deliberately expose only metrics and colours -- the label's type
@@ -26,12 +24,12 @@ LinagoraSidebarStyle buildSidebarStyle(Brightness brightness) {
 
   return LinagoraSidebarStyle(
     brightness: base.brightness,
-    itemMinHeight: 48,
+    itemMinHeight: 40,
     itemBorderRadius: base.itemBorderRadius,
-    itemIconSize: 24,
-    itemHorizontalPadding: 16,
+    itemIconSize: 18,
+    itemHorizontalPadding: 12,
     chevronSize: base.chevronSize,
-    itemSpacing: 12,
+    itemSpacing: 10,
     hoverBackground: base.hoverBackground,
     selectedBackground: base.selectedBackground,
     badgeBackground: base.badgeBackground,
@@ -41,15 +39,14 @@ LinagoraSidebarStyle buildSidebarStyle(Brightness brightness) {
     foreground: base.foreground,
     activeForeground: base.activeForeground,
     trailingForeground: base.trailingForeground,
-    // bodhimail's nav label. The line height is respecified because the
-    // default carries a ratio computed against a 14px size, and a ratio is
-    // not size-independent -- left alone it would shrink the leading as the
-    // size grew, which is the opposite of what is wanted here.
+    // The line height is respecified because the default carries a ratio
+    // computed against a 14px size, and a ratio is not size-independent --
+    // left alone it would drift as the size changed.
     labelTextStyle: base.labelTextStyle.copyWith(
-      fontSize: 15,
+      fontSize: 13,
       fontWeight: FontWeight.w500,
-      letterSpacing: -0.2,
-      height: 20 / 15,
+      letterSpacing: -0.1,
+      height: 18 / 13,
     ),
     badgeTextStyle: base.badgeTextStyle,
     actionActiveBackground: base.actionActiveBackground,
