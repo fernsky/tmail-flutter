@@ -136,7 +136,17 @@
             config: tmailFlutterConfig,
             onEntrypointLoaded: async function(engineInitializer) {
               const appRunner = await engineInitializer.initializeEngine({
-                fontFallbackBaseUrl: ''
+                fontFallbackBaseUrl: '',
+                // assetBase has to be given to the *engine*, not only to
+                // loader.load() above. The loader's copy governs its own
+                // fetches (main.dart.js, canvaskit); the engine resolves
+                // everything under assets/ separately and, without this,
+                // pulls it from the origin — which meant ~20MB of bundled
+                // fallback fonts (NotoSansSC alone is 10MB) coming off the
+                // origin one by one instead of the CDN edge.
+                ...(tmailFlutterConfig.assetBase
+                  ? { assetBase: tmailFlutterConfig.assetBase }
+                  : {})
               });
               await appRunner.runApp();
             }
