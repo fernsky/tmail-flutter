@@ -28,7 +28,7 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg" href="favicon.svg"/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Bodhimail</title>
   <link rel="manifest" href="manifest.json">
@@ -49,8 +49,12 @@
 </head>
 <body>
 
-    <dotlottie-player class="center" src="/splash/lottie-tmail.json" background="transparent" speed="1" style="width: 176px; height: 176px" direction="1" playmode="forward" autoplay=""></dotlottie-player>
-    <img src="splash/img/icon_twp.png" alt="Twake Workplace logo" class="bottom-image">
+    <!-- Twake's Lottie splash and the Twake Workplace wordmark below it were
+         both trademark-carrying and shown on every page load. Replaced with
+         our own loading mark; the Workplace logo has no counterpart here and
+         is simply gone, rather than swapped for something that would imply a
+         product we do not ship. -->
+    <img class="center" src="splash/img/loading-logo.png" alt="Bodhimail" style="width: 176px; height: 176px; object-fit: contain;">
 
     <div class="smart-banner">
         <button class="button close" onClick="closeSmartBanner()">
